@@ -2,7 +2,7 @@
 
 Next generation uuid/guid. Collision-resistant ids optimized for horizontal scaling and performance.
 
-Returns a short random string with some collision-busting measures. Safe to use as HTML element ids, and unique server-side record lookups.
+Returns a short random string with some collision-busting measures. Safe to use as identifiers in JS, HTML, CSS, and unique server-side record lookups.
 
 ## Why?
 
