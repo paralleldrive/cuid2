@@ -74,9 +74,9 @@ Available entropy is the maximum number of unique ids that can be generated. Gen
 
 The original Cuid ran for more than 10 years in across thousands of software implementations with zero confirmed collision reports, in some cases with more than 100 million users generating ids.
 
-The original Cuid had a maximum available entropy of about `3.71319E+29` (assuming 1 id per session). That's already a really big number, but the maximum recommended entropy in Cuid2 is `4.57458E+49`. For reference, that's about the same entropy difference as the size of a mosquito compared to the distance from earth to the nearest star. Cuid2 has a default maximum entropy of 1.62155E+37, which is a significant increase from the original Cuid and is comparable to the difference between the size of a baseball and the size of the moon.
+The original Cuid had a maximum available entropy of about `3.71319E+29` (assuming 1 id per session). That's already a really big number, but the maximum recommended entropy in Cuid2 is `4.57458E+49`. For reference, that's about the same entropy difference as the size of a mosquito compared to the distance from earth to the nearest star. Cuid2 has a default entropy of 1.62155E+37, which is a significant increase from the original Cuid and is comparable to the difference between the size of a baseball and the size of the moon.
 
-It's important that Cuid2 has a much larger maximum entropy because Cuid2 weakens some of the other guarantees by using a hashing function. The hashing function mixes all the sources of entropy together into a single value at the expense of risking collisions due to weaknesses in the hashing algorithm. So far, zero collisions have been detected using Cuid2.
+It's important that Cuid2 has a large entropy because Cuid2 weakens some of the other guarantees by using a hashing function. The hashing function mixes all the sources of entropy together into a single value at the expense of risking collisions due to weaknesses in the hashing algorithm. So far, zero collisions have been detected using Cuid2.
 
 
 ### More Portable
