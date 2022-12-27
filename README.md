@@ -1,6 +1,6 @@
 # Cuid2
 
-Next generation guids. Collision-resistant ids optimized for horizontal scaling and performance.
+Next generation uuid/guid. Collision-resistant ids optimized for horizontal scaling and performance.
 
 Returns a short random string with some collision-busting measures. Safe to use as HTML element ids, and unique server-side record lookups.
 
