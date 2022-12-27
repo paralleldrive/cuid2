@@ -2,11 +2,11 @@
 
 Next generation guids. Collision-resistant ids optimized for horizontal scaling and performance.
 
-Returns a short random string with some collision-busting measures. Safe to use as HTML element ID's, and unique server-side record lookups.
+Returns a short random string with some collision-busting measures. Safe to use as HTML element ids, and unique server-side record lookups.
 
 ## Why?
 
-Modern web applications have different requirements than applications written in the early days of GUID and UUIDs. Our modern unique identifiers have a stricter list of requirements that cannot all be satisfied by any existing version of the GUID/UUID specifications.
+Modern web applications have different requirements than applications written in the early days of GUID (globally unique identifiers) and UUIDs (universally unique identifiers). Our modern unique identifiers have a stricter list of requirements that cannot all be satisfied by any existing version of the GUID/UUID specifications. In particular, Cuid2 aims to provide stronger uniqueness guarantees than any existing GUID or UUID implementation.
 
 Cuid2 is an evolution of Cuid, which has been in use for more than a decade in thousands of applications, including multiple database systems. We decided to create a whole new library and standard rather than upgrade Cuid because this version represents an important departure from the original and so many projects depend on cuid that introducing a breaking change this big would probably disrupt a lot of software builds.
 
