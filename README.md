@@ -8,7 +8,7 @@ Returns a short random string with some collision-busting measures. Safe to use 
 
 Modern web applications have different requirements than applications written in the early days of GUID (globally unique identifiers) and UUIDs (universally unique identifiers). Our modern unique identifiers have a stricter list of requirements that cannot all be satisfied by any existing version of the GUID/UUID specifications. In particular, Cuid2 aims to provide stronger uniqueness guarantees than any existing GUID or UUID implementation.
 
-Cuid2 is the next generation of Cuid, which has been used in thousands of applications for over a decade with no confirmed collision reports. We decided to create a whole new library and standard rather than upgrade Cuid because this version represents an important departure from the original and so many projects depend on cuid that introducing a breaking change this big would probably disrupt a lot of software builds.
+Cuid2 is the next generation of Cuid, which has been used in thousands of applications for over a decade with no confirmed collision reports. The changes in Cuid2 are significant and could potentially disrupt the many projects that rely on Cuid, so we decided to create a replacement library and id standard, instead. Cuid is now deprecated in favor of Cuid2.
 
 Entropy is a measure of the total information in a system. In the context of unique ids, a higher entropy will lead to fewer collisions, and can also make it more difficult for an attacker to guess a valid id.
 
