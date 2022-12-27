@@ -14,11 +14,11 @@ Entropy is a measure of the total information in a system. In the context of uni
 
 Cuid2 is made up of the following entropy sources:
 
-* Initial letter (to make the id a usable identifier in JavaScript and HTML/CSS)
-* Current system time
+* An initial letter to make the id a usable identifier in JavaScript and HTML/CSS
+* The current system time
 * Pseudorandom values
-* Session counter
-* Host fingerprint (hashed variable names from the global scope)
+* A session counter
+* A host fingerprint
 
 The string is Base36 encoded, which means it contains only lowercase letters and the numbers: 0 - 9, with no special symbols.
 
