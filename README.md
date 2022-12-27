@@ -10,6 +10,8 @@ Modern web applications have different requirements than applications written in
 
 Cuid2 is an evolution of Cuid, which has been in use for more than a decade in thousands of applications, including multiple database systems. We decided to create a whole new library and standard rather than upgrade Cuid because this version represents an important departure from the original and so many projects depend on cuid that introducing a breaking change this big would probably disrupt a lot of software builds.
 
+Entropy is a measure of the total information in a system. In the context of unique ids, a higher entropy will lead to fewer collisions, and can also make it more difficult for an attacker to guess a valid id.
+
 Cuid2 is made up of the following entropy sources:
 
 * Initial letter (to make the id a usable identifier in JavaScript and HTML/CSS)
@@ -18,7 +20,7 @@ Cuid2 is made up of the following entropy sources:
 * Session counter
 * Host fingerprint (hashed variable names from the global scope)
 
-The string is Base36 encoded, containing only lowercase letters and the numbers: 0 - 9, with no special symbols.
+The string is Base36 encoded, which means it contains only lowercase letters and the numbers: 0 - 9, with no special symbols.
 
 
 ### Horizontal scalability
