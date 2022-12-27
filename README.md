@@ -59,7 +59,7 @@ Page loads need to be FAST, and that means we can't waste a lot of JavaScript on
 Client-visible ids often need to have sufficient random data and entropy to make it practically impossible to try to guess valid IDs based on an existing, known id. That makes simple sequential ids unusable in the context of client-side generated database keys. Additionally, using V4 UUIDs is also not safe, because there are known attacks on several id generating algorithms that a sophisticated attacker can use to predict next ids. Cuid2 has been audited by security experts and artificial intelligence, and is considered safe to use for use-cases like secret sharing links.
 
 
-#### Portable
+### Portable
 
 Most stronger forms of the UUID / GUID algorithms require access to OS services that are not available in browsers, meaning that they are impossible to implement as specified. Further, our id standard needs to be portable to many languages (the original cuid has 22 different language implementations).
 
