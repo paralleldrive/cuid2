@@ -6,7 +6,10 @@ Returns a short random string with some collision-busting measures. Safe to use 
 
 ## Why?
 
-Modern web applications have different requirements than applications written in the early days of GUID and UUIDs. Our modern unique identifiers have a stricter list of requirements that cannot all be satisfied by any existing version of the GUID/UUID specifications:
+Modern web applications have different requirements than applications written in the early days of GUID and UUIDs. Our modern unique identifiers have a stricter list of requirements that cannot all be satisfied by any existing version of the GUID/UUID specifications.
+
+We decided to create a whole new library rather than upgrade Cuid because this version represents an important departure from the original and so many projects depend on cuid that introducing a breaking change this big would probably disrupt a lot of software builds.
+
 
 ### Horizontal scalability
 
@@ -55,13 +58,13 @@ The original Cuid served us well for more than a decade. We used it across 2 dif
 
 ### Better Collision Resistance
 
-Collision resistance is about more than entropy, but entropy is a good starting point. Available entropy is the maximum number of unique ids that the system is capable of generating. Generally more entropy leads to lower probability of collision.
+Available entropy is the maximum number of unique ids that can be generated. Generally more entropy leads to lower probability of collision. For simplicity, we will assume a perfectly random distribution in the following discussion.
 
 The original Cuid ran for more than 10 years in across thousands of software implementations with zero confirmed collision reports, in some cases with more than 100 million users generating ids.
 
-Cuid's total available typical entropy (assuming we generate about 1 id per session) was about `1.8607364e+14`. The maximum safe entropy in Cuid2 is `6.7841552e+22`. That's more than 8 orders of magnitude more entropy (multiply by 10 almost 9 times). To put that into perspective, that's about the difference between the diameter of a tiny pebble and the diameter of the moon.
+The original Cuid had a maximum available entropy of about `3.71319E+29` (assuming 1 id per session). That's already a really big number, but the maximum recommended entropy in Cuid2 is `4.57458E+49`. For reference, that's about the same entropy difference as the size of a mosquito compared to the distance from earth to the nearest star. Cuid2 has a default maximum entropy of 1.62155E+37, which is a significant increase from the original Cuid and is comparable to the difference between the size of a baseball and the size of the moon.
 
-It's important that Cuid2 has a much larger maximum entropy because Cuid2 weakens some of the other guarantees by using a hashing function. The hashing function mixes all the sources of entropy together into a single value, at the expense of risking collisions due to weaknesses in the hashing algorithm. Don't worry - we're not using luck to figure that out. As we speak, an automated system is running tests to discover hash collision vulnerabilities. So far, zero collisions have been detected.
+It's important that Cuid2 has a much larger maximum entropy because Cuid2 weakens some of the other guarantees by using a hashing function. The hashing function mixes all the sources of entropy together into a single value at the expense of risking collisions due to weaknesses in the hashing algorithm. So far, zero collisions have been detected using Cuid2.
 
 
 ### More Portable
@@ -89,5 +92,15 @@ The original Cuid wasted entropy on session counters that were not always used, 
 
 ### Parameterized Length
 
-Different use-cases have different needs for entropy resistance. Sometimes, a short disambiguating series of random digits is enough: for example, it's common to use short slugs to disambiguate similar names, e.g. usernames or URL slugs. Since the original cuid did not hash its output, we had to make some seriously limiting entropy decisions to produce a short slug. In the new version, all sources of entropy are mixed with the hash function, and you can safely grab a substring of any length shorter than the maximum length (32 digits), accepting the collision odds trade-off that comes with shorter ids.
+Different use-cases have different needs for entropy resistance. Sometimes, a short disambiguating series of random digits is enough: for example, it's common to use short slugs to disambiguate similar names, e.g. usernames or URL slugs. Since the original cuid did not hash its output, we had to make some seriously limiting entropy decisions to produce a short slug. In the new version, all sources of entropy are mixed with the hash function, and you can safely grab a substring of any length shorter than the maximum safe entropy (32 digits), accepting the collision odds trade-off that comes with shorter ids.
 
+Length defaults to 24 characters representing an ideal entropy of `1.62155E+37`. The maximum recommended length is 32 characters, representing an ideal entropy of 
+
+
+### Enhanced Security
+
+The original Cuid leaked details about the id, including very limited data from the host environment (via the host fingerprint), and the exact time that the id was created. The new Cuid2 hashes all sources of entropy into a random-looking string.
+
+Due to the hashing algorithm, it should not be practically possible to recover any of the entropy sources from the generated ids. There is an option to generate monotonically increasing ids, but that option is turned off by default, and should only be used if you have a good, specific use-case for it. If you want to be able to sort items by creation date, we recommend making a separate `createdAt` field in your database instead of using the monotonic option because it's easy to trick a client system to generate ids in the past or future, and because order is not guaranteed across multiple hosts generating ids at nearly the same time. Under very specific circumstances, it can improve the performance of keyed database lookups, assuming your database system knows how to compare Cuids correctly. In other words, monotonic Cuids can make good internal database key indexes. We strongly encourage you to use the default values in almost all other cases.
+
+The hashing algorithm used should be difficult to reverse because it uses a salt. The salt is a random string which is added to the input entropy sources before the hashing function is applied. This makes it much more difficult for an attacker to guess valid ids, as the salt changes with each id, meaning the attacker is unable to use any existing ids as a basis for guessing others. The hash function uses a multilpe irreversible operations to generate a hash value for each character in the input string, and then combines these values into a single hash using string concatenation.
