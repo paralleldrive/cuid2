@@ -8,7 +8,17 @@ Returns a short random string with some collision-busting measures. Safe to use 
 
 Modern web applications have different requirements than applications written in the early days of GUID and UUIDs. Our modern unique identifiers have a stricter list of requirements that cannot all be satisfied by any existing version of the GUID/UUID specifications.
 
-We decided to create a whole new library rather than upgrade Cuid because this version represents an important departure from the original and so many projects depend on cuid that introducing a breaking change this big would probably disrupt a lot of software builds.
+Cuid2 is an evolution of Cuid, which has been in use for more than a decade in thousands of applications, including multiple database systems. We decided to create a whole new library and standard rather than upgrade Cuid because this version represents an important departure from the original and so many projects depend on cuid that introducing a breaking change this big would probably disrupt a lot of software builds.
+
+Cuid2 is made up of the following entropy sources:
+
+* Initial letter (to make the id a usable identifier in JavaScript and HTML/CSS)
+* Current system time
+* Pseudorandom values
+* Session counter
+* Host fingerprint (hashed variable names from the global scope)
+
+The string is Base36 encoded, containing only lowercase letters and the numbers: 0 - 9, with no special symbols.
 
 
 ### Horizontal scalability
