@@ -124,5 +124,3 @@ This project is made possible by:
 
 * [DevAnywhere](https://devanywhere.io) - Expert mentorship for software builders, from junior developers to software leaders like VPE, CTO, and CEO.
 * [EricElliottJS.com](https://ericelliottjs.com) - Learn JavaScript on demand with videos and interactive lessons.
-
-
