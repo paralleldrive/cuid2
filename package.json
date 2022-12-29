@@ -6,11 +6,17 @@
     "start": "next start",
     "lint": "next lint --fix",
     "test": "NODE_ENV=test node src/index-test.js",
+    "test-color:": "NODE_ENV=test node src/index-test.js | tap-nirvana",
     "collision-test": "NODE_ENV=test node src/collision-test.js | tap-nirvana",
     "watch": "watch 'npm run -s test | tap-nirvana && npm run -s lint' src",
     "update": "updtr",
     "release": "release-it"
   },
+  "pre-commit": [
+    "lint",
+    "test-color",
+    "collision-test"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ericelliott/cuid2.git"
@@ -34,21 +40,17 @@
   "devDependencies": {
     "eslint": "8.30.0",
     "eslint-config-next": "13.1.1",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-config-prettier": "8.5.0",
+    "eslint-plugin-prettier": "4.2.1",
     "next": "13.1.1",
-    "prettier": "^2.8.1",
+    "pre-commit": "1.2.2",
+    "prettier": "2.8.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "release-it": "^15.5.1",
-    "riteway": "^7.0.0",
-    "tap-nirvana": "^1.1.0",
-    "updtr": "^4.0.0",
-    "watch": "^1.0.2"
-  },
-  "dependencies": {
-    "@ethersproject/keccak256": "^5.7.0",
-    "@ethersproject/strings": "^5.7.0",
-    "ethers": "^5.7.2"
+    "release-it": "15.5.1",
+    "riteway": "7.0.0",
+    "tap-nirvana": "1.1.0",
+    "updtr": "4.0.0",
+    "watch": "1.0.2"
   }
 }

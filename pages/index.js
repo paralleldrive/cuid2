@@ -1,7 +1,10 @@
 import React, { useRef, useEffect } from "react";
 import { createId } from "../src/index";
 
-const RandomDistribution = ({ width = 250, height = width }) => {
+const width = 250;
+const height = width;
+
+const RandomDistribution = () => {
   const canvasRef = useRef(null);
 
   useEffect(() => {

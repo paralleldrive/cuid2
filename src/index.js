@@ -1,7 +1,4 @@
 /* global global, window, module */
-const { keccak256 } = require("@ethersproject/keccak256");
-const { toUtf8Bytes } = require("@ethersproject/strings");
-
 const defaultLength = 24;
 const bigLength = 32;
 
@@ -19,42 +16,36 @@ const createEntropy = (length = 4) => {
   return entropy;
 };
 
-// function hash(input = "", length = bigLength) {
-//   // If the input is too short, add entropy to it
-//   if (input.length < length)
-//     input = input + createEntropy(length - input.length);
+function hash(input = "", length = bigLength) {
+  // If the input is too short, add entropy to it
+  if (input.length < length)
+    input = input + createEntropy(length - input.length);
 
-//   // Hash keys start as prime numbers because prime numbers
-//   // are a good source of non-repeating random entropy.
-//   // The number of hash keys determine the length of the output.
-//   // More hash keys = longer output.
-//   const hashKeys = [109717, 109721, 109741, 109751, 109789, 109793];
+  // Hash keys start as prime numbers because prime numbers
+  // are a good source of non-repeating random entropy.
+  // The number of hash keys determine the length of the output.
+  // More hash keys = longer output.
+  const hashKeys = [109717, 109721, 109741, 109751, 109789, 109793];
 
-//   // Salt the input with randomness to prevent collisions.
-//   // The salt should be at least the same length as the output hash.
-//   const text = input + createEntropy(length);
+  // Salt the input with randomness to prevent collisions.
+  // The salt should be at least the same length as the output hash.
+  const text = input + createEntropy(length);
 
-//   for (let i = 0; i < text.length; i++) {
-//     const chr = text.charCodeAt(i);
-//     for (let j = 0; j < hashKeys.length; j++) {
-//       const hash = hashKeys[j];
-//       hashKeys[j] = Math.abs(parseInt((hash << 5) - hash + chr));
-//     }
-//   }
+  for (let i = 0; i < text.length; i++) {
+    const chr = text.charCodeAt(i);
+    for (let j = 0; j < hashKeys.length; j++) {
+      const hash = hashKeys[j];
+      hashKeys[j] = Math.abs(parseInt((hash << 5) - hash + chr));
+    }
+  }
 
-//   let output = "";
-//   for (let i = 0; i < hashKeys.length; i++) {
-//     output = output + hashKeys[i].toString(36);
-//   }
+  let output = "";
+  for (let i = 0; i < hashKeys.length; i++) {
+    output = output + hashKeys[i].toString(36);
+  }
 
-//   return output;
-// };
-const hash = (input = "", length = bigLength) => {
-  const [salt1, salt2] = [createEntropy(length), createEntropy(length)];
-  return BigInt(keccak256(toUtf8Bytes(input + salt1)))
-    .toString(36)
-    .substring(0, length);
-};
+  return output;
+}
 
 const alphabet = Array.from({ length: 26 }, (x, i) =>
   String.fromCharCode(i + 97)
