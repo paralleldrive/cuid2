@@ -1,31 +1,29 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Cuid2
 
 Collision-resistant ids optimized for horizontal scaling and performance. Next generation uuid/guid.
 
 Returns a short random string with some collision-busting measures. Safe to use as identifiers in JS, HTML, CSS, and unique server-side record lookups.
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+## Why?
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Modern web applications have different requirements than applications written in the early days of GUID (globally unique identifiers) and UUIDs (universally unique identifiers). Our modern unique identifiers have a stricter list of requirements that cannot all be satisfied by any existing version of the GUID/UUID specifications. In particular, Cuid2 aims to provide stronger uniqueness guarantees than any existing GUID or UUID implementation.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+Cuid2 is the next generation of Cuid, which has been used in thousands of applications for over a decade with no confirmed collision reports. The changes in Cuid2 are significant and could potentially disrupt the many projects that rely on Cuid, so we decided to create a replacement library and id standard, instead. Cuid is now deprecated in favor of Cuid2.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+Entropy is a measure of the total information in a system. In the context of unique ids, a higher entropy will lead to fewer collisions, and can also make it more difficult for an attacker to guess a valid id.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+Cuid2 is made up of the following entropy sources:
 
-## Learn More
+* An initial letter to make the id a usable identifier in JavaScript and HTML/CSS
+* The current system time
+* Pseudorandom values
+* A session counter
+* A host fingerprint
 
-To learn more about Next.js, take a look at the following resources:
+The string is Base36 encoded, which means it contains only lowercase letters and the numbers: 0 - 9, with no special symbols.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### Horizontal scalability
 
 Today's applications don't run on any single machine.
 
@@ -126,7 +124,3 @@ This project is made possible by:
 
 * [DevAnywhere](https://devanywhere.io) - Expert mentorship for software builders, from junior developers to software leaders like VPE, CTO, and CEO.
 * [EricElliottJS.com](https://ericelliottjs.com) - Learn JavaScript on demand with videos and interactive lessons.
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
