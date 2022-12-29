@@ -6,7 +6,7 @@
     "start": "next start",
     "lint": "next lint --fix",
     "test": "NODE_ENV=test node src/index-test.js",
-    "test-color:": "NODE_ENV=test node src/index-test.js | tap-nirvana",
+    "test-color": "NODE_ENV=test node src/index-test.js | tap-nirvana",
     "collision-test": "NODE_ENV=test node src/collision-test.js | tap-nirvana",
     "watch": "watch 'npm run -s test | tap-nirvana && npm run -s lint' src",
     "update": "updtr",
