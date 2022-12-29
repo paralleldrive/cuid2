@@ -17,10 +17,10 @@ const buildHistogram = (numbers, bucketCount = 20) => {
   );
 
   for (const number of numbers) {
-    if (counter % 10000 === 0) console.log(number);
+    if (counter % bucketLength === 0) console.log(number);
 
     const bucket = Math.floor(Number(number / BigInt(bucketLength)));
-    if (counter % 10000 === 0) console.log(bucket);
+    if (counter % bucketLength === 0) console.log(bucket);
 
     buckets[bucket] += 1;
     counter++;
@@ -28,7 +28,7 @@ const buildHistogram = (numbers, bucketCount = 20) => {
   return buckets;
 };
 
-const createIdPool = ({ max = 100000 } = {}) => {
+const createIdPool = async ({ max = 100000 } = {}) => {
   const set = new Set();
   info(`Testing ${max} unique IDs...`);
 

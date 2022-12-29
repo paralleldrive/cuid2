@@ -52,5 +52,8 @@
     "tap-nirvana": "1.1.0",
     "updtr": "4.0.0",
     "watch": "1.0.2"
+  },
+  "dependencies": {
+    "@noble/hashes": "^1.1.5"
   }
 }
