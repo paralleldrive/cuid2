@@ -7,6 +7,7 @@ describe("Cuid2", async (assert) => {
   {
     const id = createId();
     const defaultLength = getConstants().defaultLength;
+    info(id);
 
     assert({
       given: "nothing",
@@ -17,14 +18,32 @@ describe("Cuid2", async (assert) => {
   }
 
   {
+    const length = 10;
     // Test that custom cuid lengths work
-    const length10 = init({ length: 10 });
+    const cuid = init({ length });
+    const id = cuid();
+    info(id);
 
     assert({
       given: "custom cuid length",
       should: "return a cuid with the specified length",
-      actual: length10().length,
-      expected: 10,
+      actual: id.length,
+      expected: length,
+    });
+  }
+
+  {
+    const length = 32;
+    // Test that large cuid lengths work
+    const cuid = init({ length });
+    const id = cuid();
+    info(id);
+
+    assert({
+      given: "custom cuid length",
+      should: "return a cuid with the specified length",
+      actual: id.length,
+      expected: length,
     });
   }
 });
