@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 const { describe } = require("riteway");
 const { createId, init, getConstants } = require("./index");
 const { createIdPool, info } = require("./test-utils.js");
