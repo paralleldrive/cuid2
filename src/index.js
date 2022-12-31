@@ -18,16 +18,28 @@ const createEntropy = (length = 4) => {
   return entropy;
 };
 
+/**
+ *
+ * @param { String } input - The input to hash
+ * @param { Number } length - The intended length of the id. Note: The hash length is different.
+ * @returns
+ */
 const hash = (input = "", length = bigLength) => {
+  // The salt should be long enough to be globally unique across the full
+  // length of the hash. For simplicity, we use the same length as the
+  // intended id output, defaulting to the maximum recommended size.
   const salt = createEntropy(length);
   const text = input + salt;
+
+  // Drop the first two characters because they bias the histogram
+  // to the left.
   return BigInt(
-    sha3(input)
+    sha3(text)
       .map((x) => x.toString(16))
       .join("")
   )
     .toString(36)
-    .substring(2);
+    .slice(2);
 };
 
 const alphabet = Array.from({ length: 26 }, (x, i) =>
@@ -52,11 +64,9 @@ const init = ({
     const random = createEntropy(length);
     (counter++).toString(36);
     const firstLetter = randomLetter();
+    const hashInput = `${time + random + counter + fingerprint}`;
 
-    return `${
-      firstLetter +
-      hash(time + random + counter + fingerprint, length).substring(1, length)
-    }`;
+    return `${firstLetter + hash(hashInput, length).substring(1, length)}`;
   };
 };
 
