@@ -2,7 +2,39 @@
 
 Collision-resistant ids optimized for horizontal scaling and performance. Next generation uuid/guid.
 
-Returns a short random string with some collision-busting measures. Safe to use as identifiers in JS, HTML, CSS, and unique server-side record lookups.
+Need unique ids in your app? Forget UUIDs and GUIDs which often collide in large apps. Use Cuid2, instead.
+
+Cuid2 is:
+
+* Secure: It's not possible to guess the next id
+* Collision resistant: It's extremely unlikely to generate the same id twice
+* Horizontally scalable: Generate ids on multiple machines without coordination
+* Offline-compatible: Generate ids without a network connection
+* URL and name-friendly: No special characters
+* Fast and convenient: No async operations. Less than 5k, gzipped.
+
+
+## Getting Started
+
+```
+npm install --save @paralleldrive/cuid2
+```
+
+Or
+
+```
+yarn add @paralleldrive/cuid2
+```
+
+```js
+import { createId } from '@paralleldrive/cuid2';
+
+const ids = [
+  createId(), // 'tz4a98xxat96iws9zmbrgj3a'
+  createId(), // 'pfh0haxfpzowht3oi213cqos'
+  createId(), // 'nc6bzmkmd014706rfda898to'
+];
+```
 
 ## Why?
 
@@ -74,9 +106,9 @@ Available entropy is the maximum number of unique ids that can be generated. Gen
 
 The original Cuid ran for more than 10 years in across thousands of software implementations with zero confirmed collision reports, in some cases with more than 100 million users generating ids.
 
-The original Cuid had a maximum available entropy of about `3.71319E+29` (assuming 1 id per session). That's already a really big number, but the maximum recommended entropy in Cuid2 is `4.57458E+49`. For reference, that's about the same entropy difference as the size of a mosquito compared to the distance from earth to the nearest star. Cuid2 has a default entropy of 1.62155E+37, which is a significant increase from the original Cuid and is comparable to the difference between the size of a baseball and the size of the moon.
+The original Cuid had a maximum available entropy of about `3.71319E+29` (assuming 1 id per session). That's already a really big number, but the maximum recommended entropy in Cuid2 is `4.57458E+49`. For reference, that's about the same entropy difference as the size of a mosquito compared to the distance from earth to the nearest star. Cuid2 has a default entropy of `1.62155E+37`, which is a significant increase from the original Cuid and is comparable to the difference between the size of a baseball and the size of the moon.
 
-It's important that Cuid2 has a large entropy because Cuid2 weakens some of the other guarantees by using a hashing function. The hashing function mixes all the sources of entropy together into a single value at the expense of risking collisions due to weaknesses in the hashing algorithm. So far, zero collisions have been detected using Cuid2.
+The hashing function mixes all the sources of entropy together into a single value, so it's important we use a high quality hashing algorithm. We have tested billions of ids with Cuid2 with zero collisions detected to-date.
 
 
 ### More Portable
@@ -87,14 +119,14 @@ In Node, each production host was slightly different, and we could reliable grab
 
 It was also not possible to customize your fingerprint function if you had different fingerprinting needs using Cuid, e.g., if both `global` and `window` are `undefined`.
 
-Cuid2 uses a list of all global names in the JavaScript environment. Hashing it would produces a very good host fingerprint, but we intentionally did not include a hash function in Cuid because all the secure ones we could find would bloat the bundle. In Cuid2, we used AI to help create a tiny but secure-enough hash function for Cuid2, and we seed it now with random entropy, so on production environments where the globals are all identical, we lose the unique fingerprint, but still get random entropy to replace it, strengthening collision resistance.
+Cuid2 uses a list of all global names in the JavaScript environment. Hashing it would produces a very good host fingerprint, but we intentionally did not include a hash function in the original Cuid because all the secure ones we could find would bloat the bundle, so the original Cuid was unable to take full advantage of all of that unique host entropy.
 
-> Note: We did not export the hash function for use outside Cuid2 because it is intentionally non-deterministic, which is not something you want in most hash functions. It works for our use-case because we're using it to generate ids which should be different with each function call.
+In Cuid2, we use a tiny, fast, security-audited, NIST-standardized hash function and we seed it with random entropy, so on production environments where the globals are all identical, we lose the unique fingerprint, but still get random entropy to replace it, strengthening collision resistance.
 
 
 ### Deterministic Length
 
-Length was non-deterministic in Cuid. This worked fine in almost all cases, but proved to be problematic for some data structure uses, forcing some users to create wrapper code to pad the output.
+Length was non-deterministic in Cuid. This worked fine in almost all cases, but proved to be problematic for some data structure uses, forcing some users to create wrapper code to pad the output. We recommend sticking to the defaults for most cases, but if you don't need strong uniqueness guarantees, (e.g., your use-case is something like username or URL disambiguation), it can be fine to use a shorter version.
 
 
 ### More Efficient Session Counter Entropy
@@ -104,18 +136,41 @@ The original Cuid wasted entropy on session counters that were not always used, 
 
 ### Parameterized Length
 
-Different use-cases have different needs for entropy resistance. Sometimes, a short disambiguating series of random digits is enough: for example, it's common to use short slugs to disambiguate similar names, e.g. usernames or URL slugs. Since the original cuid did not hash its output, we had to make some seriously limiting entropy decisions to produce a short slug. In the new version, all sources of entropy are mixed with the hash function, and you can safely grab a substring of any length shorter than the maximum safe entropy (32 digits), accepting the collision odds trade-off that comes with shorter ids.
+Different use-cases have different needs for entropy resistance. Sometimes, a short disambiguating series of random digits is enough: for example, it's common to use short slugs to disambiguate similar names, e.g. usernames or URL slugs. Since the original cuid did not hash its output, we had to make some seriously limiting entropy decisions to produce a short slug. In the new version, all sources of entropy are mixed with the hash function, and you can safely grab a substring of any length shorter than 32 digits. You can roughly estimate how many ids you can generate before reaching 50% chance of collision with: [`sqrt(36^(n-1)*26)`](https://en.wikipedia.org/wiki/Birthday_problem#Square_approximation), so if you use `4` digits, you'll reach 50% chance of collision after generating only `~1101` ids. That might be fine for username disambiguation. Are there more than 1k people who want to share the same username?
 
-Length defaults to 24 characters representing an ideal entropy of `1.62155E+37`. The maximum recommended length is 32 characters, representing an ideal entropy of 
+By default, you'd need to generate `~4.0268498e+18` ids to reach a 50% chance of collision, and at maximum length, you'd need to generate `~6.7635614e+24` ids to reach 50% odds of collision. To use a custom length, import the `init` function, which takes configuration options:
+
+```
+import { init } from '@paralleldrive/cuid2';
+const length = 10; // 50% odds of collision after ~51,386,368 ids
+const cuid = init({ length });
+console.log(cuid()); // nw8zzfaa4v
+```
 
 
 ### Enhanced Security
 
 The original Cuid leaked details about the id, including very limited data from the host environment (via the host fingerprint), and the exact time that the id was created. The new Cuid2 hashes all sources of entropy into a random-looking string.
 
-Due to the hashing algorithm, it should not be practically possible to recover any of the entropy sources from the generated ids. There is an option to generate monotonically increasing ids, but that option is turned off by default, and should only be used if you have a good, specific use-case for it. If you want to be able to sort items by creation date, we recommend making a separate `createdAt` field in your database instead of using the monotonic option because it's easy to trick a client system to generate ids in the past or future, and because order is not guaranteed across multiple hosts generating ids at nearly the same time. Under very specific circumstances, it can improve the performance of keyed database lookups, assuming your database system knows how to compare Cuids correctly. In other words, monotonic Cuids can make good internal database key indexes. We strongly encourage you to use the default values in almost all other cases.
+Due to the hashing algorithm, it should not be practically possible to recover any of the entropy sources from the generated ids. Cuid used roughly monotonically increasing ids for database performance reasons. Some people abused them to select data by creation date. If you want to be able to sort items by creation date, we recommend making a separate, indexed `createdAt` field in your database instead of using monotonic ids because:
 
-The hashing algorithm used should be difficult to reverse because it uses a salt. The salt is a random string which is added to the input entropy sources before the hashing function is applied. This makes it much more difficult for an attacker to guess valid ids, as the salt changes with each id, meaning the attacker is unable to use any existing ids as a basis for guessing others. The hash function uses a multiple irreversible operations to generate a hash value for each character in the input string, and then combines these values into a single hash using string concatenation.
+* It's easy to trick a client system to generate ids in the past or future.
+* Order is not guaranteed across multiple hosts generating ids at nearly the same time.
+* Deterministically monotic resolution was never guaranteed.
+
+In Cuid2, the hashing algorithm uses a salt. The salt is a random string which is added to the input entropy sources before the hashing function is applied. This makes it much more difficult for an attacker to guess valid ids, as the salt changes with each id, meaning the attacker is unable to use any existing ids as a basis for guessing others.
+
+
+### Testing
+
+Before each commit, we test over 10 million ids generated in parallel across 7 different CPU cores. With each batch of tests, we run a histogram analysis to ensure an even, random distribution across the entire entropy range. Any bias would make it more likely for ids to collide, so our tests will automatically fail if it finds any.
+
+<img width="783" alt="Screen Shot 2022-12-30 at 6 19 15 PM" src="https://user-images.githubusercontent.com/364727/210122163-d9e4ebf0-3023-4a19-a724-5bdaf562f572.png">
+
+
+We also generate randograms and do spot visual inspections.
+
+![randogram](https://user-images.githubusercontent.com/364727/210122177-983ccd58-321b-48ca-8a1d-6d3465589341.png)
 
 
 ## Sponsors
