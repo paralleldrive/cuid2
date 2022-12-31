@@ -38,19 +38,36 @@ const createIdPoolsInWorkers = (numWorkers, max) => {
 
 describe("Collision Test", async (assert) => {
   {
-    const n = 100000;
-    const numPools = 10;
-    const pools = await createIdPoolsInWorkers(numPools, n);
+    const n = 7 ** 8 * 2;
+    info(`Testing ${n} unique IDs...`);
+    const numPools = 7;
+    const pools = await createIdPoolsInWorkers(numPools, n / numPools);
     const ids = [].concat(...pools.map((x) => x.ids));
     const sampleIds = ids.slice(0, 10);
+    const set = new Set(ids);
+    const histogram = pools[0].histogram;
     info(`sample ids: ${sampleIds}`);
-    info(`histogram: ${pools[0].histogram}`);
+    info(`histogram: ${histogram}`);
+    const expectedBinSize = Math.ceil(n / numPools / histogram.length);
+    const tolerance = 0.05;
+    const minBinSize = Math.round(expectedBinSize * (1 - tolerance));
+    const maxBinSize = Math.round(expectedBinSize * (1 + tolerance));
+    info(`expectedBinSize: ${expectedBinSize}`);
+    info(`minBinSize: ${minBinSize}`);
+    info(`maxBinSize: ${maxBinSize}`);
 
     assert({
       given: "lots of ids generated",
       should: "generate no collissions",
-      actual: ids.length,
-      expected: n * numPools,
+      actual: set.size,
+      expected: n,
+    });
+
+    assert({
+      given: "lots of ids generated",
+      should: "produce a histogram within distribution tolerance",
+      actual: histogram.every((x) => x > minBinSize && x < maxBinSize),
+      expected: true,
     });
   }
 });

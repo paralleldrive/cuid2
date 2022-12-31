@@ -30,7 +30,6 @@ const buildHistogram = (numbers, bucketCount = 20) => {
 
 const createIdPool = async ({ max = 100000 } = {}) => {
   const set = new Set();
-  info(`Testing ${max} unique IDs...`);
 
   for (let i = 0; i < max; i++) {
     set.add(createId());
