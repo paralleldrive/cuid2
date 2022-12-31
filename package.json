@@ -1,5 +1,6 @@
 {
-  "name": "cuid2",
+  "name": "@paralleldrive/cuid2",
+  "private": false,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
