@@ -22,7 +22,7 @@ const hash = (input = "", length = bigLength) => {
   const salt = createEntropy(length);
   const text = input + salt;
   return BigInt(
-    sha3(input)
+    sha3(text)
       .map((x) => x.toString(16))
       .join("")
   )
