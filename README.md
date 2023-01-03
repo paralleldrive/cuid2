@@ -119,7 +119,7 @@ In Node, each production host was slightly different, and we could reliable grab
 
 It was also not possible to customize your fingerprint function if you had different fingerprinting needs using Cuid, e.g., if both `global` and `window` are `undefined`.
 
-Cuid2 uses a list of all global names in the JavaScript environment. Hashing it would produces a very good host fingerprint, but we intentionally did not include a hash function in the original Cuid because all the secure ones we could find would bloat the bundle, so the original Cuid was unable to take full advantage of all of that unique host entropy.
+Cuid2 uses a list of all global names in the JavaScript environment. Hashing it produces a very good host fingerprint, but we intentionally did not include a hash function in the original Cuid because all the secure ones we could find would bloat the bundle, so the original Cuid was unable to take full advantage of all of that unique host entropy.
 
 In Cuid2, we use a tiny, fast, security-audited, NIST-standardized hash function and we seed it with random entropy, so on production environments where the globals are all identical, we lose the unique fingerprint, but still get random entropy to replace it, strengthening collision resistance.
 
