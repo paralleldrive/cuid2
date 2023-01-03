@@ -6,10 +6,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint --fix",
+    "typescript": "npx -p typescript tsc --esModuleInterop --rootDir . src/index-test.js --noEmit --allowJs --checkJs --target es2020",
     "test": "NODE_ENV=test node src/index-test.js",
     "test-color": "NODE_ENV=test node src/index-test.js | tap-nirvana",
     "collision-test": "NODE_ENV=test node src/collision-test.js | tap-nirvana",
-    "watch": "watch 'npm run -s test | tap-nirvana && npm run -s lint' src",
+    "watch": "watch 'npm run -s test | tap-nirvana && npm run -s lint && npm run -s typescript' src",
     "update": "updtr",
     "release": "release-it"
   },

@@ -13,7 +13,7 @@ const buildHistogram = (numbers, bucketCount = 20) => {
   const buckets = Array(bucketCount).fill(0);
   let counter = 1;
   const bucketLength = Math.ceil(
-    parseInt(BigInt(36 ** 23) / BigInt(bucketCount))
+    Number(BigInt(36 ** 23) / BigInt(bucketCount))
   );
 
   for (const number of numbers) {

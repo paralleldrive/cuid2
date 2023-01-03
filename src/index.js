@@ -12,10 +12,10 @@ const createEntropy = (length = 4) => {
   ];
 
   while (entropy.length < length) {
-    const randomPrime = primes[parseInt(Math.random() * primes.length)];
-    entropy = entropy + parseInt(Math.random() * randomPrime).toString(36);
+    const randomPrime = primes[Math.floor(Math.random() * primes.length)];
+    entropy = entropy + Math.floor(Math.random() * randomPrime).toString(36);
   }
-  return entropy;
+  return entropy.slice(0, length);
 };
 
 /**
@@ -46,16 +46,23 @@ const alphabet = Array.from({ length: 26 }, (x, i) =>
   String.fromCharCode(i + 97)
 );
 
-const randomLetter = () => alphabet[parseInt(Math.random() * alphabet.length)];
+const randomLetter = () =>
+  alphabet[Math.floor(Math.random() * alphabet.length)];
 
 const createFingerprint = () =>
   hash(
-    parseInt((Math.random() + 1) * 2063) +
-      Object.keys(typeof global !== "undefined" ? global : window).toString(36)
-  ).toString(36);
+    Math.floor((Math.random() + 1) * 2063) +
+      Object.keys(
+        typeof global !== "undefined"
+          ? global
+          : typeof window !== undefined
+          ? window
+          : []
+      ).toString()
+  );
 
 const init = ({
-  counter = parseInt(Math.random() * 2057),
+  counter = Math.floor(Math.random() * 2057),
   length = defaultLength,
   fingerprint = createFingerprint(),
 } = {}) => {
