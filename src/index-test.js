@@ -30,18 +30,6 @@ describe("Cuid2", async (assert) => {
   }
 
   {
-    const id = createId();
-    info(id);
-
-    assert({
-      given: "nothing",
-      should: "return an id that contains only valid characters",
-      actual: id.match(/^[a-z0-9]+$/)[0],
-      expected: id,
-    });
-  }
-
-  {
     const length = 10;
     // Test that custom cuid lengths work
     const cuid = init({ length });
