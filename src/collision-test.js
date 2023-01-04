@@ -67,5 +67,12 @@ describe("Collision Test", async (assert) => {
       actual: histogram.every((x) => x > minBinSize && x < maxBinSize),
       expected: true,
     });
+
+    assert({
+      given: "lots of ids generated",
+      should: "contain only valid characters",
+      actual: ids.every((id) => /^[a-z0-9]+$/.test(id)),
+      expected: true,
+    });
   }
 });
