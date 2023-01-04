@@ -71,8 +71,8 @@ describe("Collision Test", async (assert) => {
     assert({
       given: "lots of ids generated",
       should: "contain only valid characters",
-      actual: ids.every(id => /^[a-z0-9]+$/.test(id)),
+      actual: ids.every((id) => /^[a-z0-9]+$/.test(id)),
       expected: true,
-    });  
+    });
   }
 });
