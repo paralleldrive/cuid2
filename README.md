@@ -1,6 +1,6 @@
 # Cuid2
 
-Collision-resistant ids optimized for horizontal scaling and performance. Next generation uuid/guid.
+Secure, collision-resistant ids optimized for horizontal scaling and performance. Next generation uuids.
 
 Need unique ids in your app? Forget UUIDs and GUIDs which often collide in large apps. Use Cuid2, instead.
 
