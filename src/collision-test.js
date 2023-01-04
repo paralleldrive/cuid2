@@ -4,8 +4,6 @@ const { Worker } = require("worker_threads");
 const { createId } = require("./index.js");
 const { createIdPool, info } = require("./test-utils.js");
 
-const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
 // This is the code that will be run in each worker thread.
 // It creates an id pool and returns it.
 const workerCode = `
