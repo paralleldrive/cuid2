@@ -166,12 +166,12 @@ In Cuid2, the hashing algorithm uses a salt. The salt is a random string which i
 
 Before each commit, we test over 10 million ids generated in parallel across 7 different CPU cores. With each batch of tests, we run a histogram analysis to ensure an even, random distribution across the entire entropy range. Any bias would make it more likely for ids to collide, so our tests will automatically fail if it finds any.
 
-<img width="783" alt="Screen Shot 2022-12-30 at 6 19 15 PM" src="https://user-images.githubusercontent.com/364727/210122163-d9e4ebf0-3023-4a19-a724-5bdaf562f572.png">
+<img width="783" alt="Screen Shot 2022-12-30 at 6 19 15 PM" src="public/histogram.png">
 
 
 We also generate randograms and do spot visual inspections.
 
-![randogram](https://user-images.githubusercontent.com/364727/210122177-983ccd58-321b-48ca-8a1d-6d3465589341.png)
+![randogram](public/randogram.png)
 
 
 ## Sponsors
