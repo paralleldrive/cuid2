@@ -96,6 +96,11 @@ Client-visible ids often need to have sufficient random data and entropy to make
 
 Most stronger forms of the UUID / GUID algorithms require access to OS services that are not available in browsers, meaning that they are impossible to implement as specified. Further, our id standard needs to be portable to many languages (the original cuid has 22 different language implementations).
 
+#### Ports
+
+* [Cuid2 for .NET](https://github.com/xaevik/cuid.net) - [Alan Brault](https://github.com/xaevik)
+* [Cuid2 for Java](https://github.com/thibaultmeyer/cuid-java) - [Thibault Meyer](https://github.com/thibaultmeyer)
+
 
 ## Improvements Over Cuid
 
