@@ -13,4 +13,4 @@ declare namespace cuid2 {
   export function createId(): string
 }
 
-export = cuid2
+export = cuid2;
