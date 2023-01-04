@@ -10,9 +10,34 @@ describe("Cuid2", async (assert) => {
 
     assert({
       given: "nothing",
-      should: "return a cuid",
-      actual: [id.length, typeof id],
-      expected: [defaultLength, "string"],
+      should: "return a cuid string",
+      actual: typeof id,
+      expected: "string",
+    });
+  }
+
+  {
+    const id = createId();
+    const defaultLength = getConstants().defaultLength;
+    info(id);
+
+    assert({
+      given: "nothing",
+      should: "return a cuid of the default length",
+      actual: id.length,
+      expected: defaultLength,
+    });
+  }
+
+  {
+    const id = createId();
+    info(id);
+
+    assert({
+      given: "nothing",
+      should: "return an id that contains only valid characters",
+      actual: id.match(/^[a-z0-9]+$/)[0],
+      expected: id,
     });
   }
 
