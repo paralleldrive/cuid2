@@ -18,6 +18,8 @@ const createEntropy = (length = 4) => {
   return entropy.slice(0, length);
 };
 
+const typedArrayToString = (arr) => arr.map((x) => `${x}`).join("");
+
 /**
  *
  * @param { String } input - The input to hash
@@ -33,11 +35,7 @@ const hash = (input = "", length = bigLength) => {
 
   // Drop the first two characters because they bias the histogram
   // to the left.
-  return BigInt(
-    sha3(text)
-      .map((x) => x.toString(16))
-      .join("")
-  )
+  return BigInt(typedArrayToString(sha3(text)))
     .toString(36)
     .slice(2);
 };
@@ -82,3 +80,4 @@ const createId = init();
 module.exports.getConstants = () => ({ defaultLength, bigLength });
 module.exports.init = init;
 module.exports.createId = createId;
+module.exports.typedArrayToString = typedArrayToString;
