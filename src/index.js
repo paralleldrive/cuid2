@@ -4,12 +4,20 @@ const { sha3_512: sha3 } = require("@noble/hashes/sha3");
 const defaultLength = 24;
 const bigLength = 32;
 
+const globalObj =
+  typeof global !== "undefined"
+    ? global
+    : typeof window !== undefined
+      ? window
+      : [];
+
+const primes = [
+  109717, 109721, 109741, 109751, 109789, 109793, 109807, 109819, 109829,
+  109831,
+];
+
 const createEntropy = (length = 4) => {
   let entropy = "";
-  const primes = [
-    109717, 109721, 109741, 109751, 109789, 109793, 109807, 109819, 109829,
-    109831,
-  ];
 
   while (entropy.length < length) {
     const randomPrime = primes[Math.floor(Math.random() * primes.length)];
@@ -50,13 +58,9 @@ const randomLetter = () =>
 const createFingerprint = () =>
   hash(
     Math.floor((Math.random() + 1) * 2063) +
-      Object.keys(
-        typeof global !== "undefined"
-          ? global
-          : typeof window !== undefined
-          ? window
-          : []
-      ).toString()
+    Object.keys(
+      globalObj
+    ).toString()
   );
 
 const init = ({
