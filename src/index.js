@@ -65,11 +65,13 @@ const init = ({
   fingerprint = createFingerprint(),
 } = {}) => {
   return function cuid2() {
+    // If we're lucky, the `.toString(36)` calls may reduce hashing rounds
+    // by shortening the input to the hash function a little.
     const time = Date.now().toString(36);
     const random = createEntropy(length);
-    (counter++).toString(36);
+    const counterString = counter.toString(36);
     const firstLetter = randomLetter();
-    const hashInput = `${time + random + counter + fingerprint}`;
+    const hashInput = `${time + random + counterString + fingerprint}`;
 
     return `${firstLetter + hash(hashInput, length).substring(1, length)}`;
   };
