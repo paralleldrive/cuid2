@@ -40,7 +40,7 @@ const ids = [
 
 ## Trusted By
 
-* [Greenruhm](https://discord.gg/greenruhm)
+* [Greenruhm](https://twitter.com/greenruhm)
 * [Submit my project](https://github.com/paralleldrive/cuid2/issues/new?title=Social+proof)
 
 ## Why?
