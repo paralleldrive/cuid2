@@ -39,7 +39,7 @@ const ids = [
 
 ## Why?
 
-Modern web applications have different requirements than applications written in the early days of GUID (globally unique identifiers) and UUIDs (universally unique identifiers). Our modern unique identifiers have a stricter list of requirements that cannot all be satisfied by any existing version of the GUID/UUID specifications. In particular, Cuid2 aims to provide stronger uniqueness guarantees than any existing GUID or UUID implementation.
+Modern web applications have different requirements than applications written in the early days of GUID (globally unique identifiers) and UUIDs (universally unique identifiers). In particular, Cuid2 aims to provide stronger uniqueness guarantees than any existing GUID or UUID implementation and protect against leaking any information about the data being referenced, or the system that generated the id.
 
 Cuid2 is the next generation of Cuid, which has been used in thousands of applications for over a decade with no confirmed collision reports. The changes in Cuid2 are significant and could potentially disrupt the many projects that rely on Cuid, so we decided to create a replacement library and id standard, instead. Cuid is now deprecated in favor of Cuid2.
 
@@ -73,7 +73,7 @@ Alternatively, you've played it safe and you only let your database create ids. 
 
 ### Performance
 
-Because entities might need to be generated in high-performance loops, id generation should be fast. That means no waiting around for asynchronous entropy pool requests, or cross-process/cross-network communication. Performance slows to impracticality in the browser. All sources of entropy need to be fast enough for synchronous access.
+Id generation should be fast enough that humans won't notice a delay, but too slow to feasibly brute force (even in parallel). That means no waiting around for asynchronous entropy pool requests, or cross-process/cross-network communication. Performance slows to impracticality in the browser. All sources of entropy need to be fast enough for synchronous access.
 
 Even worse, when the database is the only guarantee that ids are unique, that means that clients are forced to send incomplete records to the database, and wait for a network round-trip before they can use the ids in any algorithm. Forget about fast client performance. It simply isn't possible.
 
