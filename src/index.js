@@ -8,8 +8,8 @@ const globalObj =
   typeof global !== "undefined"
     ? global
     : typeof window !== undefined
-      ? window
-      : [];
+    ? window
+    : [];
 
 const primes = [
   109717, 109721, 109741, 109751, 109789, 109793, 109807, 109819, 109829,
@@ -57,10 +57,7 @@ const randomLetter = () =>
 
 const createFingerprint = () =>
   hash(
-    Math.floor((Math.random() + 1) * 2063) +
-    Object.keys(
-      globalObj
-    ).toString()
+    Math.floor((Math.random() + 1) * 2063) + Object.keys(globalObj).toString()
   );
 
 const init = ({
