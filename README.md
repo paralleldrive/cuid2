@@ -37,6 +37,12 @@ const ids = [
 ];
 ```
 
+
+## Trusted By
+
+* [Greenruhm](https://discord.gg/greenruhm)
+* [Submit my project](https://github.com/paralleldrive/cuid2/issues/new?title=Social+proof)
+
 ## Why?
 
 Modern web applications have different requirements than applications written in the early days of GUID (globally unique identifiers) and UUIDs (universally unique identifiers). In particular, Cuid2 aims to provide stronger uniqueness guarantees than any existing GUID or UUID implementation and protect against leaking any information about the data being referenced, or the system that generated the id.
