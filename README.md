@@ -18,7 +18,7 @@ Need unique ids in your app? Forget UUIDs and GUIDs which often collide in large
 **Cuid2 is not good for:**
 
 * Sequential ids (see the [note on K-sortable ids](https://github.com/paralleldrive/cuid2#note-on-k-sortablesequentialmonotonically-increasing-ids), below)
-* High performance tight loops, such as render loops (if you don't need cross-host unique ids or security, consider a simple counter for this use-case, or try [Ulid, instead](https://github.com/ulid/javascript))
+* High performance tight loops, such as render loops (if you don't need cross-host unique ids or security, consider a simple counter for this use-case, or try [Ulid](https://github.com/ulid/javascript) or [NanoId](https://github.com/ai/nanoid)).
 
 
 ## Getting Started
