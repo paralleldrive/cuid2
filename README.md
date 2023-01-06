@@ -181,7 +181,7 @@ In Cuid2, the hashing algorithm uses a salt. The salt is a random string which i
 
 ## Comparisons
 
-Security was the primary motivation for creating Cuid2. Our ids should be default-secure for the same reason we use https instead of http. The problem is, all our current id specifications are based on decades-old standards that were never designed with security in mind, optimizing for database performance charactaristics which are no longer relevant in modern, distributed applications. In the following review, almost all of the popular ids today optimize for being k-sortable, which was important 10 years ago. Here's what k-sortable means, and why it's no longer as important is it was when we created the Cuid specification which [helped inspire current standards like UUID v6 - v8](https://www.ietf.org/archive/id/draft-ietf-uuidrev-rfc4122bis-00.html#section-11.2):
+Security was the primary motivation for creating Cuid2. Our ids should be default-secure for the same reason we use https instead of http. The problem is, all our current id specifications are based on decades-old standards that were never designed with security in mind, optimizing for database performance charactaristics which are no longer relevant in modern, distributed applications. Almost all of the popular ids today optimize for being k-sortable, which was important 10 years ago. Here's what k-sortable means, and why it's no longer as important is it was when we created the Cuid specification which [helped inspire current standards like UUID v6 - v8](https://www.ietf.org/archive/id/draft-ietf-uuidrev-rfc4122bis-00.html#section-11.2):
 
 
 ### Note on K-Sortable/Sequential/Monotonically Increasing Ids
