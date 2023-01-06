@@ -1,6 +1,6 @@
 # Cuid2
 
-Secure, collision-resistant ids optimized for horizontal scaling and performance. Next generation uuids.
+Secure, collision-resistant ids optimized for horizontal scaling and performance. Next generation UUIDs.
 
 Need unique ids in your app? Forget UUIDs and GUIDs which often collide in large apps. Use Cuid2, instead.
 
@@ -13,6 +13,12 @@ Need unique ids in your app? Forget UUIDs and GUIDs which often collide in large
 * **URL and name-friendly:** No special characters.
 * **Fast and convenient:** No async operations. Won't introduce user-noticeable delays. Less than 5k, gzipped.
 * **But not *too fast*:** If you can hash too quickly you can launch parallel attacks to find duplicates or break entropy-hiding. For unique ids, the fastest runner loses the security race.
+
+
+**Cuid2 is not good for:**
+
+* Sequential ids (see the note on K-sortable ids, below)
+* High performance tight loops, such as render loops (if you don't need cross-host unique ids or security, consider a simple counter for this use-case, or try [Ulid, instead](https://github.com/ulid/javascript)])
 
 
 ## Getting Started
@@ -173,7 +179,74 @@ Due to the hashing algorithm, it should not be practically possible to recover a
 In Cuid2, the hashing algorithm uses a salt. The salt is a random string which is added to the input entropy sources before the hashing function is applied. This makes it much more difficult for an attacker to guess valid ids, as the salt changes with each id, meaning the attacker is unable to use any existing ids as a basis for guessing others.
 
 
-### Testing
+## Comparisons
+
+Security was the primary motivation for creating Cuid2. Our ids should be default-secure for the same reason we use https instead of http. The problem is, all our current id specifications are based on decades-old standards that were never designed with security in mind, optimizing for database performance charactaristics which are no longer relevant in modern, distributed applications. In the following review, almost all of the popular ids today optimize for being k-sortable, which was important 10 years ago. Here's what k-sortable means, and why it's no longer as important is it was when we created the Cuid specification which [helped inspire current standards like UUID v6 - v8](https://www.ietf.org/archive/id/draft-ietf-uuidrev-rfc4122bis-00.html#section-11.2):
+
+
+### Note on K-Sortable/Sequential/Monotonically Increasing Ids
+
+TL;DR: Stop worrying about K-Sortable ids. They're not a big deal anymore. Use `createdAt` fields instead.
+
+**The performance impact of using sequential keys in modern systems is often exaggerated.** In the past, sequential keys could potentially have a significant impact on performance, but this is no longer the case in modern systems.
+
+One reason for using sequential keys is to avoid id fragmentation, which can require a large amount of disk space for databases with billions of records. However, at such a large scale, modern systems often use cloud-native databases that are designed to handle terabytes of data efficiently and at a low cost. Additionally, the entire database may be stored in memory, providing fast random-access lookup performance. Therefore, the impact of fragmented keys on performance is minimal.
+
+Worse, K-Sortable ids are not always a good thing for performance anyway, because they can cause hotspots in the database. If you have a system that generates a large number of ids in a short period of time, the ids will be generated in a sequential order, causing the tree to become unbalanced, which will lead to frequent rebalancing. This can cause a significant performance impact.
+
+So what kinds of operations suffer from a non-sequential id? Paged, sorted operations. Stuff like "fetch me 100000 records, sorted by id". That would be noticeably impacted, but how often do you need to sort by id if your id is opaque? I have never needed to.
+
+The worst part of K-Sortable ids is their impact on security. K-Sortable = insecure.
+
+
+### The Contenders
+
+We're unaware of any standard or library in the space that adequately meets all of our requirements. We'll use the following criteria to to filter a list of commonly used alternatives. Let's start with the contenders:
+
+Database increment (Int, BigInt, AutoIncrement), [UUID v1 - v8](https://www.ietf.org/archive/id/draft-ietf-UUIDrev-rfc4122bis-00.html), [NanoId](https://github.com/ai/nanoid), [Ulid](https://github.com/ulid/javascript), [Sony Snowflake](https://github.com/sony/sonyflake) (inspired by Twitter Snowflake), [ShardingID](https://instagram-engineering.com/sharding-ids-at-instagram-1cf5a71e5a5c) (Instagram), [KSUID](https://github.com/segmentio/ksuid), [PushId](https://firebase.blog/posts/2015/02/the-2120-ways-to-ensure-unique_68) (Google), [XID](https://github.com/rs/xid), [ObjectId](https://www.mongodb.com/docs/manual/reference/method/ObjectId/) (MongoDB).
+
+Here are the disqualifiers we care about:
+
+* **Leaks information:** Database auto-increment, all UUIDs except v4, Ulid, Snowflake, ShardingId, pushId, ObjectId, Ulid, ObjectId, KSUID
+* **Collision Prone:** Database auto-increment, v4 UUID
+* **Not cryptographically secure random output:** Database auto-increment, UUID v1, UUID v4
+* **Requires distributed coordination:** Snowflake, ShardingID, database increment
+* **Not URL or name friendly:** UUID (too long, dashes), Ulid (too long), UUID v7 (too long) - anything else that supports special characters like dashes, spaces, underscores, #$%^&, etc.
+* **Too fast:** UUID v1, UUID v4, NanoId, Ulid, Xid
+
+
+Here are the qualifiers we care about:
+
+* **Secure - No leaked info, attack-resistant:** Cuid2, NanoId (Medium - trusts web crypto API entropy).
+* **Collision resistant:** Cuid2, Cuid v1, NanoId, Snowflake, KSUID, XID, Ulid, ShardingId, ObjectId, UUID v6 - v8.
+* **Horizontally scalable:** Cuid2, Cuid v1, NanoId, ObjectId, Ulid, KSUID, Ulid, Xid, ShardingId, ObjectId, UUID v6 - v8.
+* **Offline-compatible:** Cuid2, Cuid v1, NanoId, Ulid, UUID v6 - v8.
+* **URL and name-friendly:** Cuid2, Cuid v1, NanoId (with custom alphabet).
+* **Fast and convenient:** Cuid2, Cuid v1, NanoId, Ulid, KSUID, Xid, UUID v4, UUID v7.
+* **But not *too fast*:** Cuid2, Cuid v1, UUID v7, Snowflake, ShardingId, ObjectId.
+
+Cuid2 is the only solution that passed all of our tests.
+
+
+### NanoId and Ulid
+
+Overall, NanoId and Ulid seem to hit most of our requirements, but they trust the random entropy from the Web Crypto API too much. The Web Crypto API trusts 2 untrustworthy things: The [random entropy source](https://docs.rs/bug/0.2.0/bug/rand/index.html#cryptographic-security), and the hashing algorithm used to stretch the entropy into random-looking data.
+
+Some implementations have had serious bugs that [went unpatched for years](https://bugs.chromium.org/p/chromium/issues/detail?id=552749). Because browser and OS implementations can sit on known security bugs for so long, we can't trust the entropy from the web crypto API. We need to supply our own entropy to ensure that ids remain unguessable.
+
+Along with using cryptographically secure methods, Cuid2 supplies its own known entropy from a diverse pool and uses a security audited, NIST-standard cryptographically secure hashing algorithm.
+
+**Too fast:** NanoId and Ulid are also very fast. But that's not a good thing. The faster you can generate ids, the faster you can run collision attacks. Bad guys looking for statistical anomalies in the distribution of ids can use the speed of NanoId to their advantage. Cuid2 is fast enough to be convenient, but not so fast that it's a security risk.
+
+
+#### Entropy Security Comparison
+
+* NanoId Entropy: Web Crypto.
+* Ulid Entropy: Web Crypto + time stamp.
+* Cuid2 Entropy: Web Crypto + time stamp + counter + host fingerprint + hashing algorithm.
+
+
+## Testing
 
 Before each commit, we test over 10 million ids generated in parallel across 7 different CPU cores. With each batch of tests, we run a histogram analysis to ensure an even, random distribution across the entire entropy range. Any bias would make it more likely for ids to collide, so our tests will automatically fail if it finds any.
 
