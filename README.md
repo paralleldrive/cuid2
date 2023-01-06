@@ -188,7 +188,9 @@ Security was the primary motivation for creating Cuid2. Our ids should be defaul
 
 TL;DR: Stop worrying about K-Sortable ids. They're not a big deal anymore. Use `createdAt` fields instead.
 
-**The performance impact of using sequential keys in modern systems is often exaggerated.** In the past, sequential keys could potentially have a significant impact on performance, but this is no longer the case in modern systems.
+**The performance impact of using sequential keys in modern systems is often exaggerated.** If your database is too small to use cloud-native solutions, it's also too small to worry about the performance impact of sequential vs random ids unless you're living in the distant past (i.e. you're using hardware from 2010). If it's large enough to worry, random ids may still be faster.
+
+In the past, sequential keys could potentially have a significant impact on performance, but this is no longer the case in modern systems.
 
 One reason for using sequential keys is to avoid id fragmentation, which can require a large amount of disk space for databases with billions of records. However, at such a large scale, modern systems often use cloud-native databases that are designed to handle terabytes of data efficiently and at a low cost. Additionally, the entire database may be stored in memory, providing fast random-access lookup performance. Therefore, the impact of fragmented keys on performance is minimal.
 
