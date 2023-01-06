@@ -194,7 +194,7 @@ One reason for using sequential keys is to avoid id fragmentation, which can req
 
 Worse, K-Sortable ids are not always a good thing for performance anyway, because they can cause hotspots in the database. If you have a system that generates a large number of ids in a short period of time, the ids will be generated in a sequential order, causing the tree to become unbalanced, which will lead to frequent rebalancing. This can cause a significant performance impact.
 
-So what kinds of operations suffer from a non-sequential id? Paged, sorted operations. Stuff like "fetch me 100000 records, sorted by id". That would be noticeably impacted, but how often do you need to sort by id if your id is opaque? I have never needed to.
+So what kinds of operations suffer from a non-sequential id? Paged, sorted operations. Stuff like "fetch me 100000 records, sorted by id". That would be noticeably impacted, but how often do you need to sort by id if your id is opaque? I have never needed to. Modern cloud databases allow you to create indexes on `createdAt` fields which perform extremely well.
 
 The worst part of K-Sortable ids is their impact on security. K-Sortable = insecure.
 
