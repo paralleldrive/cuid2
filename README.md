@@ -209,7 +209,7 @@ Database increment (Int, BigInt, AutoIncrement), [UUID v1 - v8](https://www.ietf
 
 Here are the disqualifiers we care about:
 
-* **Leaks information:** Database auto-increment, all UUIDs except v4, Ulid, Snowflake, ShardingId, pushId, ObjectId, Ulid, ObjectId, KSUID
+* **Leaks information:** Database auto-increment, all UUIDs except v4, Ulid, Snowflake, ShardingId, pushId, ObjectId, ObjectId, KSUID
 * **Collision Prone:** Database auto-increment, v4 UUID
 * **Not cryptographically secure random output:** Database auto-increment, UUID v1, UUID v4
 * **Requires distributed coordination:** Snowflake, ShardingID, database increment
@@ -221,7 +221,7 @@ Here are the qualifiers we care about:
 
 * **Secure - No leaked info, attack-resistant:** Cuid2, NanoId (Medium - trusts web crypto API entropy).
 * **Collision resistant:** Cuid2, Cuid v1, NanoId, Snowflake, KSUID, XID, Ulid, ShardingId, ObjectId, UUID v6 - v8.
-* **Horizontally scalable:** Cuid2, Cuid v1, NanoId, ObjectId, Ulid, KSUID, Ulid, Xid, ShardingId, ObjectId, UUID v6 - v8.
+* **Horizontally scalable:** Cuid2, Cuid v1, NanoId, ObjectId, Ulid, KSUID, Xid, ShardingId, ObjectId, UUID v6 - v8.
 * **Offline-compatible:** Cuid2, Cuid v1, NanoId, Ulid, UUID v6 - v8.
 * **URL and name-friendly:** Cuid2, Cuid v1, NanoId (with custom alphabet).
 * **Fast and convenient:** Cuid2, Cuid v1, NanoId, Ulid, KSUID, Xid, UUID v4, UUID v7.
@@ -232,7 +232,7 @@ Cuid2 is the only solution that passed all of our tests.
 
 ### NanoId and Ulid
 
-Overall, NanoId and Ulid seem to hit most of our requirements, but they trust the random entropy from the Web Crypto API too much. The Web Crypto API trusts 2 untrustworthy things: The [random entropy source](https://docs.rs/bug/0.2.0/bug/rand/index.html#cryptographic-security), and the hashing algorithm used to stretch the entropy into random-looking data.
+Overall, NanoId and Ulid seem to hit most of our requirements, Ulid leaks timestamps, and they both trust the random entropy from the Web Crypto API too much. The Web Crypto API trusts 2 untrustworthy things: The [random entropy source](https://docs.rs/bug/0.2.0/bug/rand/index.html#cryptographic-security), and the hashing algorithm used to stretch the entropy into random-looking data.
 
 Some implementations have had serious bugs that [went unpatched for years](https://bugs.chromium.org/p/chromium/issues/detail?id=552749). Because browser and OS implementations can sit on known security bugs for so long, we can't trust the entropy from the web crypto API. We need to supply our own entropy to ensure that ids remain unguessable.
 
@@ -244,7 +244,7 @@ Along with using cryptographically secure methods, Cuid2 supplies its own known 
 #### Entropy Security Comparison
 
 * NanoId Entropy: Web Crypto.
-* Ulid Entropy: Web Crypto + time stamp.
+* Ulid Entropy: Web Crypto + time stamp (leaked).
 * Cuid2 Entropy: Web Crypto + time stamp + counter + host fingerprint + hashing algorithm.
 
 
