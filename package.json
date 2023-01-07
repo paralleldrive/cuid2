@@ -58,7 +58,8 @@
     "watch": "1.0.2"
   },
   "dependencies": {
-    "@noble/hashes": "^1.1.5"
+    "@noble/hashes": "^1.1.5",
+    "uuid": "^9.0.0"
   },
   "version": "1.0.2"
 }

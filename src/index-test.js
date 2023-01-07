@@ -1,5 +1,14 @@
 const { describe } = require("riteway");
-const { createId, init, getConstants, typedArrayToString } = require("./index");
+const {
+  createId,
+  init,
+  getConstants,
+  typedArrayToString,
+  uuidToNumbers,
+  createEntropy,
+  random,
+  randomLetter,
+} = require("./index");
 const { createIdPool, info } = require("./test-utils.js");
 
 describe("Cuid2", async (assert) => {
@@ -76,4 +85,62 @@ describe("typedArrayToString", async (assert) => {
       expected,
     });
   }
+});
+
+describe("uuidToNumbers", async (assert) => {
+  const string = "bcecfdae-af13-4e0c-b31d-1769a4c3e09f";
+  const expected = [0.7379911948782372, 0.6838883191076779];
+  const actual = uuidToNumbers(string);
+  info(`uuid: ${string}`);
+  info(`results: ${actual}`);
+
+  assert({
+    given: "a string",
+    should: "return the correct corresponding number",
+    actual,
+    expected,
+  });
+});
+
+describe("createEntropy", async (assert) => {
+  const entropy = createEntropy(4);
+  info(`entropy: ${entropy}`);
+
+  assert({
+    given: "number of characters of entropy to generate",
+    should: "return a string of the correct length",
+    actual: entropy.length,
+    expected: 4,
+  });
+});
+
+describe("random", async (assert) => {
+  const actual = random();
+  info(`random: ${actual}`);
+
+  assert({
+    given: "nothing",
+    should: "return a number",
+    actual: typeof actual,
+    expected: "number",
+  });
+});
+
+describe("randomLetter", async (assert) => {
+  const actual = randomLetter();
+  info(`randomLetter: ${actual}`);
+
+  assert({
+    given: "nothing",
+    should: "return a random letter",
+    actual: actual.length,
+    expected: 1,
+  });
+
+  assert({
+    given: "nothing",
+    should: "return a letter in the valid range [a-z]",
+    actual: /[a-z]/.test(actual),
+    expected: true,
+  });
 });

@@ -1,8 +1,28 @@
 /* global global, window, module */
+const { v4 } = require("uuid");
 const { sha3_512: sha3 } = require("@noble/hashes/sha3");
 
 const defaultLength = 24;
 const bigLength = 32;
+
+const randomUUID = v4;
+
+const typedArrayToString = (arr) => arr.map((x) => `${x}`).join("");
+
+const hexToScaled = (str, max = 0xffffffff) => Number(`0x${str}`) / max;
+
+// It's not a requirement to use a UUID. It's just a convenient
+// hack in JavaScript to get CSPRNG values if they're available. We never use
+// the second half, so we only convert the first half.
+const uuidToNumbers = (str) => {
+  const string = str.replace(/-/g, "");
+  const a = hexToScaled(string.slice(0, 8));
+  const b = hexToScaled(string.slice(8, 16));
+  return [a, b];
+};
+
+const randomValues = () => uuidToNumbers(randomUUID());
+const random = () => randomValues()[0];
 
 const globalObj =
   typeof global !== "undefined"
@@ -12,21 +32,20 @@ const globalObj =
     : [];
 
 const primes = [
-  109717, 109721, 109741, 109751, 109789, 109793, 109807, 109819, 109829,
-  109831,
+  4294967291, 4294967279, 4294967231, 4294967197, 4294967189, 4294967161,
+  4294967143, 4294967111, 4294967087, 4294967029,
 ];
 
 const createEntropy = (length = 4) => {
   let entropy = "";
 
   while (entropy.length < length) {
-    const randomPrime = primes[Math.floor(Math.random() * primes.length)];
-    entropy = entropy + Math.floor(Math.random() * randomPrime).toString(36);
+    const [random1, random2] = randomValues();
+    const randomPrime = primes[Math.floor(random1 * primes.length)];
+    entropy = entropy + Math.floor(random2 * randomPrime).toString(36);
   }
   return entropy.slice(0, length);
 };
-
-const typedArrayToString = (arr) => arr.map((x) => `${x}`).join("");
 
 /**
  *
@@ -52,16 +71,13 @@ const alphabet = Array.from({ length: 26 }, (x, i) =>
   String.fromCharCode(i + 97)
 );
 
-const randomLetter = () =>
-  alphabet[Math.floor(Math.random() * alphabet.length)];
+const randomLetter = () => alphabet[Math.floor(random() * alphabet.length)];
 
 const createFingerprint = () =>
-  hash(
-    Math.floor((Math.random() + 1) * 2063) + Object.keys(globalObj).toString()
-  );
+  hash(Math.floor((random() + 1) * 2063) + Object.keys(globalObj).toString());
 
 const init = ({
-  counter = Math.floor(Math.random() * 2057),
+  counter = Math.floor(random() * 2057),
   length = defaultLength,
   fingerprint = createFingerprint(),
 } = {}) => {
@@ -84,3 +100,7 @@ module.exports.getConstants = () => ({ defaultLength, bigLength });
 module.exports.init = init;
 module.exports.createId = createId;
 module.exports.typedArrayToString = typedArrayToString;
+module.exports.uuidToNumbers = uuidToNumbers;
+module.exports.createEntropy = createEntropy;
+module.exports.random = random;
+module.exports.randomLetter = randomLetter;

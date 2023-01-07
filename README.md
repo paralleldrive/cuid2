@@ -11,7 +11,7 @@ Need unique ids in your app? Forget UUIDs and GUIDs which often collide in large
 * **Horizontally scalable:** Generate ids on multiple machines without coordination.
 * **Offline-compatible:** Generate ids without a network connection.
 * **URL and name-friendly:** No special characters.
-* **Fast and convenient:** No async operations. Won't introduce user-noticeable delays. Less than 5k, gzipped.
+* **Fast and convenient:** No async operations. Won't introduce user-noticeable delays. ~5k, gzipped.
 * **But not *too fast*:** If you can hash too quickly you can launch parallel attacks to find duplicates or break entropy-hiding. For unique ids, the fastest runner loses the security race.
 
 
@@ -61,7 +61,7 @@ Cuid2 is made up of the following entropy sources:
 
 * An initial letter to make the id a usable identifier in JavaScript and HTML/CSS
 * The current system time
-* Pseudorandom values
+* Pseudorandom values (cryptographically secure, if available)
 * A session counter
 * A host fingerprint
 

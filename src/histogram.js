@@ -13,6 +13,7 @@ describe("Histogram", async (assert) => {
     const histogram = pool.histogram;
     info(`sample ids: ${sampleIds}`);
     info(`histogram: ${histogram}`);
+
     const expectedBinSize = Math.ceil(n / histogram.length);
     const tolerance = 0.05;
     const minBinSize = Math.round(expectedBinSize * (1 - tolerance));
