@@ -7,7 +7,7 @@ const bigLength = 32;
 const globalObj =
   typeof global !== "undefined"
     ? global
-    : typeof window !== undefined
+    : typeof window !== "undefined"
     ? window
     : [];
 
@@ -16,12 +16,12 @@ const primes = [
   109831,
 ];
 
-const createEntropy = (length = 4) => {
+const createEntropy = (length = 4, random = Math.random) => {
   let entropy = "";
 
   while (entropy.length < length) {
-    const randomPrime = primes[Math.floor(Math.random() * primes.length)];
-    entropy = entropy + Math.floor(Math.random() * randomPrime).toString(36);
+    const randomPrime = primes[Math.floor(random() * primes.length)];
+    entropy = entropy + Math.floor(random() * randomPrime).toString(36);
   }
   return entropy.slice(0, length);
 };
@@ -52,27 +52,30 @@ const alphabet = Array.from({ length: 26 }, (x, i) =>
   String.fromCharCode(i + 97)
 );
 
-const randomLetter = () =>
-  alphabet[Math.floor(Math.random() * alphabet.length)];
+const randomLetter = (random) =>
+  alphabet[Math.floor(random() * alphabet.length)];
 
-const createFingerprint = () =>
-  hash(
-    Math.floor((Math.random() + 1) * 2063) + Object.keys(globalObj).toString()
-  );
+const createFingerprint = (random) =>
+  hash(Math.floor((random() + 1) * 2063) + Object.keys(globalObj).toString());
+
+const createCounter = (count) => () => {
+  return count++;
+};
 
 const init = ({
-  counter = Math.floor(Math.random() * 2057),
+  random = Math.random,
+  counter = createCounter(Math.floor(random() * 2057)),
   length = defaultLength,
-  fingerprint = createFingerprint(),
+  fingerprint = createFingerprint(random),
 } = {}) => {
   return function cuid2() {
     // If we're lucky, the `.toString(36)` calls may reduce hashing rounds
     // by shortening the input to the hash function a little.
     const time = Date.now().toString(36);
-    const random = createEntropy(length);
-    const counterString = counter.toString(36);
-    const firstLetter = randomLetter();
-    const hashInput = `${time + random + counterString + fingerprint}`;
+    const randomEntropy = createEntropy(length, random);
+    const count = counter().toString(36);
+    const firstLetter = randomLetter(random);
+    const hashInput = `${time + randomEntropy + count + fingerprint}`;
 
     return `${firstLetter + hash(hashInput, length).substring(1, length)}`;
   };
@@ -84,3 +87,4 @@ module.exports.getConstants = () => ({ defaultLength, bigLength });
 module.exports.init = init;
 module.exports.createId = createId;
 module.exports.typedArrayToString = typedArrayToString;
+module.exports.createCounter = createCounter;
