@@ -7,7 +7,7 @@ const bigLength = 32;
 const globalObj =
   typeof global !== "undefined"
     ? global
-    : typeof window !== undefined
+    : typeof window !== "undefined"
     ? window
     : [];
 
