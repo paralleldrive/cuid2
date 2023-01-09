@@ -1,5 +1,11 @@
 const { describe } = require("riteway");
-const { createId, init, getConstants, typedArrayToString } = require("./index");
+const {
+  createId,
+  init,
+  getConstants,
+  typedArrayToString,
+  createCounter,
+} = require("./index");
 const { createIdPool, info } = require("./test-utils.js");
 
 describe("Cuid2", async (assert) => {
@@ -76,4 +82,18 @@ describe("typedArrayToString", async (assert) => {
       expected,
     });
   }
+});
+
+describe("createCounter", async (assert) => {
+  const counter = createCounter(10);
+  const expected = [10, 11, 12, 13];
+  const actual = [counter(), counter(), counter(), counter()];
+  info(actual);
+
+  assert({
+    given: "a starting number",
+    should: "return a function that increments the number",
+    actual,
+    expected,
+  });
 });
