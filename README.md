@@ -111,8 +111,8 @@ Most stronger forms of the UUID / GUID algorithms require access to OS services 
 #### Ports
 
 * [Cuid2 for .NET](https://github.com/xaevik/cuid.net) - [Alan Brault](https://github.com/xaevik)
+* [Cuid2 for PHP](https://github.com/xaevik/php-cuid2) - [Alan Brault](https://github.com/xaevik)
 * [Cuid2 for Java](https://github.com/thibaultmeyer/cuid-java) - [Thibault Meyer](https://github.com/thibaultmeyer)
-
 
 ## Improvements Over Cuid
 
