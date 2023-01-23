@@ -54,6 +54,8 @@ const hash = (input = "", length = bigLength) => {
   const salt = createEntropy(length);
   const text = input + salt;
 
+  // Drop the first character because it will bias the histogram
+  // to the left.
   return bufToBigInt(sha3(text)).toString(36).slice(1);
 };
 
