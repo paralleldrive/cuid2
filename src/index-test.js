@@ -3,8 +3,8 @@ const {
   createId,
   init,
   getConstants,
-  typedArrayToString,
   createCounter,
+  bufToBigInt,
 } = require("./index");
 const { createIdPool, info } = require("./test-utils.js");
 
@@ -66,24 +66,6 @@ describe("Cuid2", async (assert) => {
   }
 });
 
-describe("typedArrayToString", async (assert) => {
-  {
-    const nums = Array.from({ length: 256 }, (x, i) => i);
-    const expected = nums.map((x) => `${x}`).join("");
-
-    const typedArray = new Uint8Array(nums);
-    const actual = typedArrayToString(typedArray);
-    info(`${actual.slice(0, 32)}...`);
-
-    assert({
-      given: "a typed array",
-      should: "return the correct corresponding string",
-      actual,
-      expected,
-    });
-  }
-});
-
 describe("createCounter", async (assert) => {
   const counter = createCounter(10);
   const expected = [10, 11, 12, 13];
@@ -96,4 +78,30 @@ describe("createCounter", async (assert) => {
     actual,
     expected,
   });
+});
+
+describe("bufToBigInt", async (assert) => {
+  {
+    const actual = bufToBigInt(new Uint8Array(2));
+    const expected = BigInt(0);
+
+    assert({
+      given: "an empty Uint8Array",
+      should: "return 0",
+      actual,
+      expected,
+    });
+  }
+
+  {
+    const actual = bufToBigInt(new Uint8Array([0xff, 0xff, 0xff, 0xff]));
+    const expected = BigInt("4294967295");
+
+    assert({
+      given: "a maximum-value Uint32Array",
+      should: "return 2^32 - 1",
+      actual,
+      expected,
+    });
+  }
 });
