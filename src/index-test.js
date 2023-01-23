@@ -82,11 +82,11 @@ describe("createCounter", async (assert) => {
 
 describe("bufToBigInt", async (assert) => {
   {
-    const actual = bufToBigInt(new Uint32Array(2));
+    const actual = bufToBigInt(new Uint8Array(2));
     const expected = BigInt(0);
 
     assert({
-      given: "an empty Uint32Array",
+      given: "an empty Uint8Array",
       should: "return 0",
       actual,
       expected,
