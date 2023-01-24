@@ -113,6 +113,7 @@ Most stronger forms of the UUID / GUID algorithms require access to OS services 
 * [Cuid2 for .NET](https://github.com/xaevik/cuid.net) - [Alan Brault](https://github.com/xaevik)
 * [Cuid2 for PHP](https://github.com/xaevik/php-cuid2) - [Alan Brault](https://github.com/xaevik)
 * [Cuid2 for Java](https://github.com/thibaultmeyer/cuid-java) - [Thibault Meyer](https://github.com/thibaultmeyer)
+* [Cuid2 for Dart](https://github.com/obsidiaHQ/cuid2) - [George Mamar](https://github.com/obsidiaHQ)
 
 ## Improvements Over Cuid
 
