@@ -211,7 +211,7 @@ Database increment (Int, BigInt, AutoIncrement), [UUID v1 - v8](https://www.ietf
 
 Here are the disqualifiers we care about:
 
-* **Leaks information:** Database auto-increment, all UUIDs except v4, Ulid, Snowflake, ShardingId, pushId, ObjectId, KSUID
+* **Leaks information:** Database auto-increment, all UUIDs (except V4 and including V6 - V8), Ulid, Snowflake, ShardingId, pushId, ObjectId, KSUID
 * **Collision Prone:** Database auto-increment, v4 UUID
 * **Not cryptographically secure random output:** Database auto-increment, UUID v1, UUID v4
 * **Requires distributed coordination:** Snowflake, ShardingID, database increment
