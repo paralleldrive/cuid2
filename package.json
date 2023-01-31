@@ -2,6 +2,11 @@
   "name": "@paralleldrive/cuid2",
   "private": false,
   "types": "index.d.ts",
+  "files": [
+    "src/index.js",
+    "index.js",
+    "index.d.ts"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
