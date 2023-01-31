@@ -115,6 +115,7 @@ Most stronger forms of the UUID / GUID algorithms require access to OS services 
 * [Cuid2 for .NET](https://github.com/xaevik/cuid.net) - [Alan Brault](https://github.com/xaevik)
 * [Cuid2 for PHP](https://github.com/xaevik/php-cuid2) - [Alan Brault](https://github.com/xaevik)
 * [Cuid2 for Python](https://github.com/overflowdigital/cuid2.py) - [Overflow Digital](https://github.com/overflowdigital)
+* [Cuid2 for Rust](https://github.com/mplanchard/cuid-rust) - [Matthew Planchard](https://github.com/mplanchard)
 
 ## Improvements Over Cuid
 
