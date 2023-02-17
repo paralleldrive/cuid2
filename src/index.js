@@ -4,26 +4,13 @@ const { sha3_512: sha3 } = require("@noble/hashes/sha3");
 const defaultLength = 24;
 const bigLength = 32;
 
-const globalObj =
-  typeof global !== "undefined"
-    ? global
-    : typeof window !== "undefined"
-    ? window
-    : [];
-
-const primes = [
-  109717, 109721, 109741, 109751, 109789, 109793, 109807, 109819, 109829,
-  109831,
-];
-
 const createEntropy = (length = 4, random = Math.random) => {
   let entropy = "";
 
   while (entropy.length < length) {
-    const randomPrime = primes[Math.floor(random() * primes.length)];
-    entropy = entropy + Math.floor(random() * randomPrime).toString(36);
+    entropy = entropy + Math.floor(random() * 36).toString(36);
   }
-  return entropy.slice(0, length);
+  return entropy;
 };
 
 /*
@@ -48,15 +35,9 @@ function bufToBigInt(buf) {
  * @returns
  */
 const hash = (input = "", length = bigLength) => {
-  // The salt should be long enough to be globally unique across the full
-  // length of the hash. For simplicity, we use the same length as the
-  // intended id output, defaulting to the maximum recommended size.
-  const salt = createEntropy(length);
-  const text = input + salt;
-
   // Drop the first character because it will bias the histogram
   // to the left.
-  return bufToBigInt(sha3(text)).toString(36).slice(1);
+  return bufToBigInt(sha3(input)).toString(36).slice(1);
 };
 
 const alphabet = Array.from({ length: 26 }, (x, i) =>
@@ -66,27 +47,57 @@ const alphabet = Array.from({ length: 26 }, (x, i) =>
 const randomLetter = (random) =>
   alphabet[Math.floor(random() * alphabet.length)];
 
-const createFingerprint = (random) =>
-  hash(Math.floor((random() + 1) * 2063) + Object.keys(globalObj).toString());
+/*
+This is a fingerprint of the host environment. It is used to help
+prevent collisions when generating ids in a distributed system.
+If no global object is available, you can pass in your own, or fall back
+on a random string.
+*/
+const createFingerprint = ({
+  globalObj = typeof global !== "undefined"
+    ? global
+    : typeof window !== "undefined"
+    ? window
+    : {},
+} = {}) => {
+  const globals = Object.keys(globalObj).toString();
+  const sourceString = globals.length
+    ? globals + createEntropy(bigLength)
+    : createEntropy(bigLength);
+
+  return hash(sourceString).substring(0, bigLength);
+};
 
 const createCounter = (count) => () => {
   return count++;
 };
 
+// ~22k hosts before 50% chance of initial counter collision
+// with a remaining counter range of 9.0e+15 in JavaScript.
+const initialCountMax = 476782367;
+
 const init = ({
+  // Fallback if the user does not pass in a CSPRNG. This should be OK
+  // because we don't rely solely on the random number generator for entropy.
+  // We also use the host fingerprint, current time, and a session counter.
   random = Math.random,
-  counter = createCounter(Math.floor(random() * 2057)),
+  counter = createCounter(Math.floor(random() * initialCountMax)),
   length = defaultLength,
-  fingerprint = createFingerprint(random),
+  fingerprint = createFingerprint(),
 } = {}) => {
   return function cuid2() {
+    const firstLetter = randomLetter(random);
+
     // If we're lucky, the `.toString(36)` calls may reduce hashing rounds
     // by shortening the input to the hash function a little.
     const time = Date.now().toString(36);
-    const randomEntropy = createEntropy(length, random);
     const count = counter().toString(36);
-    const firstLetter = randomLetter(random);
-    const hashInput = `${time + randomEntropy + count + fingerprint}`;
+
+    // The salt should be long enough to be globally unique across the full
+    // length of the hash. For simplicity, we use the same length as the
+    // intended id output.
+    const salt = createEntropy(length, random);
+    const hashInput = `${time + salt + count + fingerprint}`;
 
     return `${firstLetter + hash(hashInput, length).substring(1, length)}`;
   };
@@ -99,3 +110,4 @@ module.exports.init = init;
 module.exports.createId = createId;
 module.exports.bufToBigInt = bufToBigInt;
 module.exports.createCounter = createCounter;
+module.exports.createFingerprint = createFingerprint;

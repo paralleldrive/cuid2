@@ -5,13 +5,14 @@ const {
   getConstants,
   createCounter,
   bufToBigInt,
+  createFingerprint,
 } = require("./index");
-const { createIdPool, info } = require("./test-utils.js");
+
+const { info } = require("./test-utils.js");
 
 describe("Cuid2", async (assert) => {
   {
     const id = createId();
-    const defaultLength = getConstants().defaultLength;
     info(id);
 
     assert({
@@ -43,8 +44,8 @@ describe("Cuid2", async (assert) => {
     info(id);
 
     assert({
-      given: "custom cuid length",
-      should: "return a cuid with the specified length",
+      given: "custom cuid with a smaller length",
+      should: "return a cuid with the specified smaller length",
       actual: id.length,
       expected: length,
     });
@@ -58,8 +59,8 @@ describe("Cuid2", async (assert) => {
     info(id);
 
     assert({
-      given: "custom cuid length",
-      should: "return a cuid with the specified length",
+      given: "custom cuid with a larger length",
+      should: "return a cuid with the specified larger length",
       actual: id.length,
       expected: length,
     });
@@ -100,6 +101,36 @@ describe("bufToBigInt", async (assert) => {
     assert({
       given: "a maximum-value Uint32Array",
       should: "return 2^32 - 1",
+      actual,
+      expected,
+    });
+  }
+});
+
+describe("createFingerprint", async (assert) => {
+  {
+    const fingerprint = createFingerprint();
+    const actual = fingerprint.length >= 24;
+    const expected = true;
+    info(`Host fingerprint: ${fingerprint}`);
+
+    assert({
+      given: "no arguments",
+      should: "return a string of sufficient length",
+      actual,
+      expected,
+    });
+  }
+  {
+    const fingerprint = createFingerprint({ globalObj: {} });
+    const actual = fingerprint.length >= 24;
+    const expected = true;
+
+    info(`Empty global fingerprint: ${fingerprint}`);
+
+    assert({
+      given: "an empty global object",
+      should: "fall back on random entropy",
       actual,
       expected,
     });
