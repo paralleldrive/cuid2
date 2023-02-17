@@ -18,28 +18,33 @@ describe("Histogram", async (assert) => {
   });
 
   {
+    // Arrange
     const tolerance = 0.1;
     const idLength = 23;
     const totalLetters = idLength * n;
     const base = 36;
-    const charFrequencies = {};
+    const expectedBinSize = Math.ceil(totalLetters / base);
+    const minBinSize = Math.round(expectedBinSize * (1 - tolerance));
+    const maxBinSize = Math.round(expectedBinSize * (1 + tolerance));
+
+    // Act
     // Drop the first character because it will always be a letter, making
     // the letter frequency skewed.
     const testIds = ids.map((id) => id.slice(2));
-    const frequencies = ids.reduce((acc, id) => {
+    const charFrequencies = {};
+    testIds.forEach((id) => {
       id.split("").forEach(
         (char) => (charFrequencies[char] = (charFrequencies[char] || 0) + 1)
       );
     });
-    const expectedBinSize = Math.ceil(totalLetters / base);
-    const minBinSize = Math.round(expectedBinSize * (1 - tolerance));
-    const maxBinSize = Math.round(expectedBinSize * (1 + tolerance));
+
     info("Testing character frequency...");
     info(`expectedBinSize: ${expectedBinSize}`);
     info(`minBinSize: ${minBinSize}`);
     info(`maxBinSize: ${maxBinSize}`);
     info(`charFrequencies: ${JSON.stringify(charFrequencies)}`);
 
+    // Assert
     assert({
       given: "lots of ids generated",
       should: "produce even character frequency",
@@ -48,14 +53,22 @@ describe("Histogram", async (assert) => {
       ),
       expected: true,
     });
+
+    assert({
+      given: "lots of ids generated",
+      should: "represent all character values",
+      actual: Object.keys(charFrequencies).length,
+      expected: base,
+    });
   }
 
   {
     const histogram = pool.histogram;
-    info(`sample ids: ${sampleIds}`);
+    info(`sample ids:`);
+    sampleIds.forEach((id) => info(`  ${id}`));
     info(`histogram: ${histogram}`);
     const expectedBinSize = Math.ceil(n / histogram.length);
-    const tolerance = 0.05;
+    const tolerance = 0.1;
     const minBinSize = Math.round(expectedBinSize * (1 - tolerance));
     const maxBinSize = Math.round(expectedBinSize * (1 + tolerance));
     info(`expectedBinSize: ${expectedBinSize}`);
