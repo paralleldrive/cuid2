@@ -28,13 +28,7 @@ function bufToBigInt(buf) {
   return value;
 }
 
-/**
- *
- * @param { String } input - The input to hash
- * @param { Number } length - The intended length of the id. Note: The hash length is different.
- * @returns
- */
-const hash = (input = "", length = bigLength) => {
+const hash = (input = "") => {
   // Drop the first character because it will bias the histogram
   // to the left.
   return bufToBigInt(sha3(input)).toString(36).slice(1);
@@ -99,7 +93,7 @@ const init = ({
     const salt = createEntropy(length, random);
     const hashInput = `${time + salt + count + fingerprint}`;
 
-    return `${firstLetter + hash(hashInput, length).substring(1, length)}`;
+    return `${firstLetter + hash(hashInput).substring(1, length)}`;
   };
 };
 

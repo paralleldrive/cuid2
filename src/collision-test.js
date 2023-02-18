@@ -1,8 +1,7 @@
 const { describe } = require("riteway");
 const { Worker } = require("worker_threads");
 
-const { createId } = require("./index.js");
-const { createIdPool, info } = require("./test-utils.js");
+const { info } = require("./test-utils.js");
 
 // This is the code that will be run in each worker thread.
 // It creates an id pool and returns it.
