@@ -1,5 +1,4 @@
 const { describe } = require("riteway");
-const { createId } = require("./index.js");
 const { createIdPool, info } = require("./test-utils.js");
 
 describe("Histogram", async (assert) => {

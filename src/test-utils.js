@@ -1,4 +1,3 @@
-const { describe } = require("riteway");
 const { createId } = require("./index.js");
 
 const info = (txt) => console.log(`# - ${txt}`);
