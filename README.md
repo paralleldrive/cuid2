@@ -43,6 +43,41 @@ const ids = [
 ];
 ```
 
+### Configuration
+
+```js
+import { init } from '@paralleldrive/cuid2';
+
+// The init function returns a custom createId function with the specified
+// configuration.
+const createId = init({
+  // A custom random function with the same API as Math.random.
+  // You should use this to pass a cryptographically secure random function.
+  random: Math.random,
+  length: 10, // the length of the id
+  fingerprint: 'a-custom-host-fingerprint',
+});
+
+console.log(
+  createId(), // wjfazn7qnd
+  createId(), // cerhuy9499
+  createId(), // itp2u4ozr4
+);
+```
+
+
+### Validation
+
+```js
+import { createId, isCuid } from '@paralleldrive/cuid2';
+
+
+console.log(
+  isCuid(createId()), // true
+  isCuid('not a cuid'), // false
+);
+```
+
 
 ## Trusted By
 

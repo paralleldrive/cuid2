@@ -99,9 +99,28 @@ const init = ({
 
 const createId = init();
 
+const isCuid = (id, { minLength = 2, maxLength = bigLength } = {}) => {
+  const length = id.length;
+  const regex = /^[0-9a-z]+$/;
+
+  try {
+    if (
+      typeof id === "string" &&
+      length >= minLength &&
+      length <= maxLength &&
+      regex.test(id)
+    )
+      return true;
+  } finally {
+  }
+
+  return false;
+};
+
 module.exports.getConstants = () => ({ defaultLength, bigLength });
 module.exports.init = init;
 module.exports.createId = createId;
 module.exports.bufToBigInt = bufToBigInt;
 module.exports.createCounter = createCounter;
 module.exports.createFingerprint = createFingerprint;
+module.exports.isCuid = isCuid;
