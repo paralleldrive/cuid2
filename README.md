@@ -47,6 +47,7 @@ const ids = [
 ## Trusted By
 
 * [Greenruhm](https://twitter.com/greenruhm)
+* [Typebot](https://typebot.io/)
 * [Submit my project](https://github.com/paralleldrive/cuid2/issues/new?title=Social+proof)
 
 ## Why?
