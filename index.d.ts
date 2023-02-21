@@ -10,6 +10,8 @@ declare namespace cuid2 {
     fingerprint?: string
   }): () => string
 
+  export function isCuid(id: string): boolean
+
   export function createId(): string
 }
 

@@ -6,6 +6,7 @@ const {
   createCounter,
   bufToBigInt,
   createFingerprint,
+  isCuid,
 } = require("./index");
 
 const { info } = require("./test-utils.js");
@@ -131,6 +132,44 @@ describe("createFingerprint", async (assert) => {
     assert({
       given: "an empty global object",
       should: "fall back on random entropy",
+      actual,
+      expected,
+    });
+  }
+});
+
+describe("isCuid", async (assert) => {
+  {
+    const actual = isCuid(createId());
+    const expected = true;
+
+    assert({
+      given: "a valid cuid",
+      should: "return true",
+      actual,
+      expected,
+    });
+  }
+
+  {
+    const actual = isCuid(createId() + createId() + createId());
+    const expected = false;
+
+    assert({
+      given: "a cuid that is too long",
+      should: "return false",
+      actual,
+      expected,
+    });
+  }
+
+  {
+    const actual = isCuid("");
+    const expected = false;
+
+    assert({
+      given: "an empty string",
+      should: "return false",
       actual,
       expected,
     });
