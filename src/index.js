@@ -53,11 +53,12 @@ const createFingerprint = ({
     : typeof window !== "undefined"
     ? window
     : {},
+  random = Math.random,
 } = {}) => {
   const globals = Object.keys(globalObj).toString();
   const sourceString = globals.length
-    ? globals + createEntropy(bigLength)
-    : createEntropy(bigLength);
+    ? globals + createEntropy(bigLength, random)
+    : createEntropy(bigLength, random);
 
   return hash(sourceString).substring(0, bigLength);
 };
@@ -77,7 +78,7 @@ const init = ({
   random = Math.random,
   counter = createCounter(Math.floor(random() * initialCountMax)),
   length = defaultLength,
-  fingerprint = createFingerprint(),
+  fingerprint = createFingerprint({ random }),
 } = {}) => {
   return function cuid2() {
     const firstLetter = randomLetter(random);
