@@ -63,7 +63,8 @@
     "watch": "1.0.2"
   },
   "dependencies": {
-    "@noble/hashes": "^1.1.5"
+    "@noble/hashes": "^1.1.5",
+    "text-encoding-polyfill": "^0.6.7"
   },
   "version": "2.2.0"
 }

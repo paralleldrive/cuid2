@@ -1,4 +1,5 @@
 /* global global, window, module */
+require("text-encoding-polyfill");
 const { sha3_512: sha3 } = require("@noble/hashes/sha3");
 
 const defaultLength = 24;
