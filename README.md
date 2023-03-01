@@ -300,6 +300,31 @@ We also generate randograms and do spot visual inspections.
 
 ![randogram](public/randogram.png)
 
+## Troubleshooting
+
+Some React Native environments may be missing TextEncoding features, which will need to be polyfilled. The following have both worked for users who have encountered this issue:
+
+```
+npm install --save fast-text-encoding
+```
+
+Then, before importing Cuid2:
+
+```js
+import "fast-text-encoding";
+```
+
+Alternatively, if that doesn't work:
+
+```
+npm install --save text-encoding-polyfill
+```
+
+Then, before importing Cuid2:
+
+```js
+import "text-encoding-polyfill";
+```
 
 ## Sponsors
 
