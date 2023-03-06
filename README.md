@@ -244,7 +244,7 @@ The worst part of K-Sortable ids is their impact on security. K-Sortable = insec
 
 ### The Contenders
 
-We're unaware of any standard or library in the space that adequately meets all of our requirements. We'll use the following criteria to to filter a list of commonly used alternatives. Let's start with the contenders:
+We're unaware of any standard or library in the space that adequately meets all of our requirements. We'll use the following criteria to filter a list of commonly used alternatives. Let's start with the contenders:
 
 Database increment (Int, BigInt, AutoIncrement), [UUID v1 - v8](https://www.ietf.org/archive/id/draft-ietf-UUIDrev-rfc4122bis-00.html), [NanoId](https://github.com/ai/nanoid), [Ulid](https://github.com/ulid/javascript), [Sony Snowflake](https://github.com/sony/sonyflake) (inspired by Twitter Snowflake), [ShardingID](https://instagram-engineering.com/sharding-ids-at-instagram-1cf5a71e5a5c) (Instagram), [KSUID](https://github.com/segmentio/ksuid), [PushId](https://firebase.blog/posts/2015/02/the-2120-ways-to-ensure-unique_68) (Google), [XID](https://github.com/rs/xid), [ObjectId](https://www.mongodb.com/docs/manual/reference/method/ObjectId/) (MongoDB).
 
