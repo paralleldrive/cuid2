@@ -87,6 +87,10 @@ console.log(
 
 ## Why?
 
+Ids should be secure by default for the same reason that browser sessions should be secure by default. There are too many things that can go wrong when they're not, and insecure ids can cause problems in unexpected ways, [unauthorized user](https://www.intruder.io/research/in-guid-we-trust) [account access](https://infosecwriteups.com/bugbounty-how-i-was-able-to-compromise-any-user-account-via-reset-password-functionality-a11bb5f863b3), [unauthorized access to user data](https://infosecwriteups.com/how-this-easy-vulnerability-resulted-in-a-20-000-bug-bounty-from-gitlab-d9dc9312c10a), accidental leaks of user's personal data which can lead to catastrophic effects, even in innocent-sounding applications like fitness run trackers (see the [2018 Strava Pentagon breach](https://www.engadget.com/2018-02-02-strava-s-fitness-heatmaps-are-a-potential-catastrophe.html) and [PleaseRobMe](https://pleaserobme.com/why).
+
+Not all security measures should be considered equal. For example, it's not a good idea to trust your browser's "Cryptographically Secure" Psuedo Random Number Generator (CSPRNG) (used in tools like `uuid` and `nanoid`). For example, there may be [bugs in browser CSPRNGs](https://bugs.chromium.org/p/chromium/issues/detail?id=552749). For many years, Chromium's `Math.random()` [wasn't very random at all](https://thenextweb.com/news/google-chromes-javascript-engine-finally-returns-actual-random-numbers). Cuid was created to solve the issue of untrustworthy entropy in id generators that led to frequent id collisions and related problems in production applications. Instead of trusting a single source of entropy, Cuid2 combines several sources of entropy to provide stronger security and collision-resistance guarantees than are available in other solutions.
+
 Modern web applications have different requirements than applications written in the early days of GUID (globally unique identifiers) and UUIDs (universally unique identifiers). In particular, Cuid2 aims to provide stronger uniqueness guarantees than any existing GUID or UUID implementation and protect against leaking any information about the data being referenced, or the system that generated the id.
 
 Cuid2 is the next generation of Cuid, which has been used in thousands of applications for over a decade with no confirmed collision reports. The changes in Cuid2 are significant and could potentially disrupt the many projects that rely on Cuid, so we decided to create a replacement library and id standard, instead. Cuid is now deprecated in favor of Cuid2.
@@ -273,9 +277,7 @@ Cuid2 is the only solution that passed all of our tests.
 
 ### NanoId and Ulid
 
-Overall, NanoId and Ulid seem to hit most of our requirements, Ulid leaks timestamps, and they both trust the random entropy from the Web Crypto API too much. The Web Crypto API trusts 2 untrustworthy things: The [random entropy source](https://docs.rs/bug/0.2.0/bug/rand/index.html#cryptographic-security), and the hashing algorithm used to stretch the entropy into random-looking data.
-
-Some implementations have had serious bugs that [went unpatched for years](https://bugs.chromium.org/p/chromium/issues/detail?id=552749). Because browser and OS implementations can sit on known security bugs for so long, we can't trust the entropy from the web crypto API. We need to supply our own entropy to ensure that ids remain unguessable.
+Overall, NanoId and Ulid seem to hit most of our requirements, Ulid leaks timestamps, and they both trust the random entropy from the Web Crypto API too much. The Web Crypto API trusts 2 untrustworthy things: The [random entropy source](https://docs.rs/bug/0.2.0/bug/rand/index.html#cryptographic-security), and the hashing algorithm used to stretch the entropy into random-looking data. Some implementations have had [serious bugs that made them vulnerable to attack](https://bugs.chromium.org/p/chromium/issues/detail?id=552749).
 
 Along with using cryptographically secure methods, Cuid2 supplies its own known entropy from a diverse pool and uses a security audited, NIST-standard cryptographically secure hashing algorithm.
 
