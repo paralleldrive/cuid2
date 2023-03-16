@@ -5,6 +5,7 @@ declare namespace cuid2 {
   }
 
   export function init(options?: {
+    random?: number
     counter?: () => number
     length?: number
     fingerprint?: string
