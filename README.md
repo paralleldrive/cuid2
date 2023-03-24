@@ -150,6 +150,7 @@ Most stronger forms of the UUID / GUID algorithms require access to OS services 
 
 #### Ports
 
+* [Cuid2 for Clojure](https://github.com/hden/cuid2) - [Haokang Den](https://github.com/hden)
 * [Cuid2 for ColdFusion](https://github.com/bennadel/CUID2-For-ColdFusion) - [Ben Nadel](https://github.com/bennadel)
 * [Cuid2 for Dart](https://github.com/obsidiaHQ/cuid2) - [George Mamar](https://github.com/obsidiaHQ)
 * [Cuid2 for Java](https://github.com/thibaultmeyer/cuid-java) - [Thibault Meyer](https://github.com/thibaultmeyer)
