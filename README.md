@@ -43,6 +43,8 @@ const ids = [
 ];
 ```
 
+Using Jest? Jump to [Using with Jest](#using-in-jest).
+
 ### Configuration
 
 ```js
@@ -331,6 +333,61 @@ Then, before importing Cuid2:
 ```js
 import "text-encoding-polyfill";
 ```
+
+### Using in Jest
+
+Jest uses jsdom, which builds a global object which doesn't comply with current standards. There is a known issue in Jest when jsdom environment is used. The results of `new TextEncoder().encode()` and `new Uint8Array()` are different, refer to [jestjs/jest#9983](https://github.com/jestjs/jest/issues/9983).
+
+To work around this limitation on jsdom (and by extension, Jest), you'll need to use custom environment which overwrites Uint8Array provided by jsdom:
+
+Install jest-environment-jsdom. Make sure to use the same version as your jest. See [this answer on Stackoverflow for reference](https://stackoverflow.com/a/72124554).
+
+```
+❯ npm i jest-environment-jsdom@27
+```
+
+Create `jsdom-env.js` file in the root:
+
+```js
+const JSDOMEnvironmentBase = require('jest-environment-jsdom');
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+class JSDOMEnvironment extends JSDOMEnvironmentBase {
+    constructor(...args) {
+        const { global } = super(...args);
+
+        global.Uint8Array = Uint8Array;
+    }
+}
+
+exports.default = JSDOMEnvironment;
+exports.TestEnvironment = JSDOMEnvironment;
+```
+
+Update scripts to use the custom environment:
+
+```js
+{
+    // ...
+    "scripts": {
+        // ...
+        "test": "react-scripts test --env=./jsdom-env.js",
+        // ...
+    },
+}
+```
+
+#### JSDOM is Missing Features
+
+JSDOM doesn't support TextEncoder and TextDecoder, refer jsdom/jsdom#2524.
+
+In Jest, features like Uint8Array/TextEncoder/TextDecoder may be available in the jsdom environment but may produce results different from the platform standards. These are known bugs which may be resolved by jsdom at some point, but there is no clear ETA.
+
+Note that this issue may impact any package that relies on the TextEncoder or TextDecorder standards. If you would like to use a simple test runner that just works, try [Riteway](https://github.com/paralleldrive/riteway).
+
 
 ## Sponsors
 
