@@ -63,7 +63,7 @@
     "watch": "1.0.2"
   },
   "dependencies": {
-    "@noble/hashes": "^1.1.5"
+    "js-sha3": "^0.9.1"
   },
   "version": "2.2.2"
 }
