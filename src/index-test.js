@@ -174,4 +174,64 @@ describe("isCuid", async (assert) => {
       expected,
     });
   }
+
+  {
+    const actual = isCuid("42");
+    const expected = false;
+
+    assert({
+      given: "a non-CUID string",
+      should: "return false",
+      actual,
+      expected,
+    });
+  }
+
+  {
+    const actual = isCuid("aaaaDLL");
+    const expected = true;
+
+    assert({
+      given: "a valid CUID2 string",
+      should: "return true",
+      actual,
+      expected,
+    });
+  }
+
+  {
+    const actual = isCuid("yi7rqj1trke");
+    const expected = true;
+
+    assert({
+      given: "a valid CUID2 string",
+      should: "return true",
+      actual,
+      expected,
+    });
+  }
+
+  {
+    const actual = isCuid("-x!ha");
+    const expected = false;
+
+    assert({
+      given: "a string with invalid characters",
+      should: "return false",
+      actual,
+      expected,
+    });
+  }
+
+  {
+    const actual = isCuid("ab*%@#x");
+    const expected = false;
+
+    assert({
+      given: "a string with invalid characters",
+      should: "return false",
+      actual,
+      expected,
+    });
+  }
 });

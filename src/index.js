@@ -102,7 +102,7 @@ const createId = init();
 
 const isCuid = (id, { minLength = 2, maxLength = bigLength } = {}) => {
   const length = id.length;
-  const regex = /^[0-9a-z]+$/;
+  const regex = /^[a-z][0-9a-z]+$/;
 
   try {
     if (

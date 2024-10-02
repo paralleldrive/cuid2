@@ -11,7 +11,7 @@ declare namespace cuid2 {
     fingerprint?: string
   }): () => string
 
-  export function isCuid(id: string): boolean
+  export function isCuid(id: string, options?: { minLength?: number, maxLength?: number }): boolean
 
   export function createId(): string
 }
