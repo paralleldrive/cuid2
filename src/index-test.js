@@ -189,11 +189,11 @@ describe("isCuid", async (assert) => {
 
   {
     const actual = isCuid("aaaaDLL");
-    const expected = true;
+    const expected = false;
 
     assert({
-      given: "a valid CUID2 string",
-      should: "return true",
+      given: "a string with capital letters",
+      should: "return false",
       actual,
       expected,
     });
