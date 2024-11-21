@@ -18,9 +18,9 @@ const createEntropy = (length = 4, random = Math.random) => {
  * MIT License Copyright (c) 2018 Juan Hernández Serrano
  */
 function bufToBigInt(buf) {
-  let bits = 8n;
+  let bits = BigInt(8);
 
-  let value = 0n;
+  let value = BigInt(0);
   for (const i of buf.values()) {
     const bi = BigInt(i);
     value = (value << bits) + bi;
