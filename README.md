@@ -164,6 +164,7 @@ Most stronger forms of the UUID / GUID algorithms require access to OS services 
 * [Cuid2 for Python](https://github.com/gordon-code/cuid2) - [Gordon Code](https://github.com/gordon-code)
 * [Cuid2 for Ruby](https://github.com/stulzer/cuid2/blob/main/lib/cuid2.rb) - [Rubens Stulzer](https://github.com/stulzer)
 * [Cuid2 for Rust](https://github.com/mplanchard/cuid-rust) - [Matthew Planchard](https://github.com/mplanchard)
+* [Cuid2 for Zig](https://github.com/typesafe/cuid2-zig) - [Gino Heyman](https://github.com/typesafe)
 
 ## Improvements Over Cuid
 
