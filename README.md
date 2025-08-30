@@ -84,13 +84,11 @@ console.log(
 ```
 
 
-## Trusted By
+## Trusted by Millions of Apps
 
-* [Greenruhm](https://twitter.com/greenruhm)
-* [Typebot](https://typebot.io/)
-* [Submit my project](https://github.com/paralleldrive/cuid2/issues/new?title=Social+proof)
+Cuid2 is trusted by millions of apps and attracts ~6.5 million weekly downloads.
 
-## Why?
+## Why Cuid2?
 
 Ids should be secure by default for the same reason that browser sessions should be secure by default. There are too many things that can go wrong when they're not, and insecure ids can cause problems in unexpected ways, including [unauthorized user](https://www.intruder.io/research/in-guid-we-trust) [account access](https://infosecwriteups.com/bugbounty-how-i-was-able-to-compromise-any-user-account-via-reset-password-functionality-a11bb5f863b3), [unauthorized access to user data](https://infosecwriteups.com/how-this-easy-vulnerability-resulted-in-a-20-000-bug-bounty-from-gitlab-d9dc9312c10a), and accidental leaks of user's personal data which can lead to catastrophic effects, even in innocent-sounding applications like fitness run trackers (see the [2018 Strava Pentagon breach](https://www.engadget.com/2018-02-02-strava-s-fitness-heatmaps-are-a-potential-catastrophe.html) and [PleaseRobMe](https://pleaserobme.com/why)).
 
