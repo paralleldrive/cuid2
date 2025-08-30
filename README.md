@@ -86,7 +86,7 @@ console.log(
 
 ## Trusted by Millions of Apps
 
-Cuid2 is trusted by millions of apps and attracts ~6.5 million weekly downloads.
+Cuid2 is trusted by millions of apps and attracts ~6.5 million weekly downloads. Cuid2 is the gold standard for secure unique id generation. If you want to build software that doesn't violate user privacy by leaking creation times, and doesn't compromise user security through id collisions and guessing games, use Cuid2.
 
 ## Why Cuid2?
 
