@@ -1,6 +1,7 @@
 {
   "name": "@paralleldrive/cuid2",
   "private": false,
+  "type": "module",
   "types": "index.d.ts",
   "files": [
     "src/index.js",
@@ -19,7 +20,7 @@
     "histogram": "NODE_ENV=test node src/histogram.js | tap-nirvana",
     "watch": "watch 'npm run -s test | tap-nirvana && npm run -s lint && npm run -s typescript' src",
     "update": "updtr",
-    "release": "release-it"
+    "release": "node release.js"
   },
   "pre-commit": [
     "lint",
@@ -57,13 +58,14 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "release-it": "15.5.1",
-    "riteway": "7.0.0",
+    "riteway": "^9.0.0-rc.1",
     "tap-nirvana": "1.1.0",
     "updtr": "4.0.0",
     "watch": "1.0.2"
   },
   "dependencies": {
-    "@noble/hashes": "^1.7.1"
+    "@noble/hashes": "^1.7.1",
+    "error-causes": "^3.0.2"
   },
   "version": "2.2.2"
 }
