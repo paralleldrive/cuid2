@@ -1,0 +1,36 @@
+---
+description: Use this guide to conduct a thorough code review focusing on code quality, best practices, and adherence to project standards.
+globs: **/*.js,**/*.jsx,**/*.ts,**/*.tsx
+alwaysApply: false
+---
+# 🔬 Code Review
+
+Act as a top-tier principal software engineer to conduct a thorough code review focusing on code quality, best practices, and adherence to requirements, plan, and project standards.
+
+Criteria {
+  Before beginning, read and respect the constraints in please.mdc.
+  Use javascript.mdc for JavaScript/TypeScript code quality and best practices.
+  Use tdd.mdc for test coverage and test quality assessment.
+  Use stack.mdc for NextJS + React/Redux + Shadcn UI architecture and patterns.
+  Use ui.mdc for UI/UX design and component quality.
+  Use autodux.mdc for Redux state management patterns and Autodux usage.
+  Use javascript-io-network-effects.mdc for network effects and side effect handling.
+  Use commit.mdc for commit message quality and conventional commit format.
+  Compare the completed work to the functional requirements to ensure adherence and that all requirements are met.
+  Compare the task plan in $projectRoot/tasks/ to the completed work to ensure that all tasks were completed and that the completed work adheres to the plan.
+}
+
+Review Process {
+  1. Analyze code structure and organization
+  2. Check adherence to coding standards and best practices
+  3. Evaluate test coverage and quality
+  4. Assess performance and security considerations
+  5. Review UI/UX implementation and accessibility
+  6. Validate architectural patterns and design decisions
+  7. Check documentation and commit message quality
+  8. Provide actionable feedback with specific improvement suggestions
+}
+
+Commands {
+  🔬 /review - conduct a thorough code review focusing on code quality, best practices, and adherence to project standards
+}

@@ -1,0 +1,67 @@
+---
+description: When you need to make network requests or invoke side-effects, use this guide for saga pattern implementation
+alwaysApply: false
+---
+# JavaScript IO Guide
+
+Act as a top-tier software engineer with serious JavaScript/TypeScript discipline to isolate network I/O and effects using the saga pattern.
+
+The saga pattern consists of two main functions:
+
+- `call`
+- `put`
+
+## call(fn, ...args) => { CALL: { fn, args } }
+
+The `call` function takes a function and arguments and returns an object with those references as props. Use it to make network requests or invoke other side effects.
+
+The saga itself never calls the effect function. Instead, it yields the effect object. This allows the saga to behave deterministically with no side-effects, allowing you to test and debug the saga without running the side effects. You can then pass any result or error back into the saga to test various branches of the saga without mocking the integrated components.
+
+## put(action) => { PUT: Action }
+
+The `put` function is used to dispatch an action to the store. Use it to update tha state.
+
+
+## Action
+
+An action is an object with a `type` property and a `payload` property. It's used in central dispatch architectures such as Redux to update the state in a way that provides obvservability into semantic user intents, a complete log of user actions, along with the specific components (slices) that originated the action.
+
+
+## Saga Runtime
+
+Saga driver runtime runs the sagas, handles side effects, passes data back into the saga, and dispatches `put` actions to the store.
+
+## Testing sagas
+
+To test sagas, you can drive the saga by calling `iterator.next(optionalValue)`.
+
+e.g.
+
+```javascript
+describe("signInSaga happy path", async assert => {
+  const gen = signInUser();
+  
+  assert({
+    given: "load user triggered",
+    should: "call fetchUser with id",
+    actual: gen.next().value,
+    expected: call(fetchUser, "42")
+  });
+  
+  const fakeUser = { id: "42", name: "Pup" };
+  
+  assert({
+    given: "second yield",
+    should: "put the user data into the store",
+    actual: gen.next(fakeUser).value,
+    expected: put(userLoaded(fakeUser))
+  });
+  
+  assert({
+    given: "completion",
+    should: "be done",
+    actual: gen.next().done,
+    expected: true
+  });
+});
+```

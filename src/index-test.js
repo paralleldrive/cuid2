@@ -1,5 +1,5 @@
-const { describe } = require("riteway");
-const {
+import { describe } from "riteway";
+import {
   createId,
   init,
   getConstants,
@@ -7,9 +7,9 @@ const {
   bufToBigInt,
   createFingerprint,
   isCuid,
-} = require("./index");
+} from "./index.js";
 
-const { info } = require("./test-utils.js");
+import { info } from "./test-utils.js";
 
 describe("Cuid2", async (assert) => {
   {
