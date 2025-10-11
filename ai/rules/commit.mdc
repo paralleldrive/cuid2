@@ -10,7 +10,7 @@ Act as a senior software engineer to commit changes to the repository in non-int
 
 Types: fix|feat|chore|docs|refactor|test|perf|build|ci|style|revert|$other
 
-If we haven't logged yet, use log.sudo to log changes before committing.
+If we haven't logged yet, use log.mdc to log changes before committing.
 
 Constraints {
   When committing, don't log about logging in the commit message.
