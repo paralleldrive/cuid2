@@ -237,13 +237,17 @@ Security was the primary motivation for creating Cuid2. Our ids should be defaul
 
 TL;DR: Stop worrying about K-Sortable ids. They're not a big deal anymore. Use `createdAt` fields instead.
 
-**The performance impact of using sequential keys in modern systems is often exaggerated.** If your database is too small to use cloud-native solutions, it's also too small to worry about the performance impact of sequential vs random ids unless you're living in the distant past (i.e. you're using hardware from 2010). If it's large enough to worry, random ids may still be faster.
+In the past, sequential keys could potentially have a significant impact on performance, leading to the advice that you should use k-sortable ids—but this is no longer the case in modern systems. If your database is too small to use cloud-native solutions, it's also too small to worry about the performance impact of sequential vs random ids unless you're living in the distant past (i.e. you're using hardware from 2010). If it's large enough to worry, random ids generally outperform k-sortable ids due to hotspots which hurt load-balancing across hosts.
 
-In the past, sequential keys could potentially have a significant impact on performance, but this is no longer the case in modern systems.
-
-One reason for using sequential keys is to avoid id fragmentation, which can require a large amount of disk space for databases with billions of records. However, at such a large scale, modern systems often use cloud-native databases that are designed to handle terabytes of data efficiently and at a low cost. Additionally, the entire database may be stored in memory, providing fast random-access lookup performance. Therefore, the impact of fragmented keys on performance is minimal.
+One reason for using sequential keys is to avoid id fragmentation, which can require a large amount of disk space for databases with billions of records. However, at scales long enough for k-sortable ids to matter, modern systems usually use cloud-native databases that are designed to handle terabytes of data efficiently and at a low cost. Additionally, the entire database may be stored in memory or high-performance SSDs, providing fast random-access lookup performance. Therefore, the impact of fragmented keys on query performance is minimal.
 
 Worse, K-Sortable ids are not always a good thing for performance anyway, because they can cause hotspots in the database. If you have a system that generates a large number of ids in a short period of time, the ids will be generated in a sequential order, causing the tree to become unbalanced, which will lead to frequent rebalancing. This can cause a significant performance impact.
+
+Sortable ids are generally SLOWER than random ids in distributed systems because they always append monotonically, creating index cluster-oriented [hotspots](https://www.cockroachlabs.com/docs/stable/understand-hotspots) — writes clustered to the tail end of the index. Likewise, [Google Cloud Datastore recommends against sequential ids](https://cloud.google.com/datastore/docs/best-practices) for the same reason.
+
+Since all the writes are clustered in one place, it reduces the benefits of distributed load balancing, meaning that you get serial performance when you could have parallel performance. In other words, the system is forced to handle one write at a time instead of multiple writes in parallel.
+
+It takes tens or hundreds of millions of rows for sequential/random id differences to be consequential, and once you get to that kind of scale, distributed load balancing is orders of magnitude more important for performance than your choice of id on any one host - the network becomes the bottleneck, and random ids become more beneficial for performance than k-sortable ids, because it helps load balancing systems avoid hotspot bottlenecks.
 
 So what kinds of operations suffer from a non-sequential id? Paged, sorted operations. Stuff like "fetch me 100000 records, sorted by id". That would be noticeably impacted, but how often do you need to sort by id if your id is opaque? I have never needed to. Modern cloud databases allow you to create indexes on `createdAt` fields which perform extremely well.
 
@@ -391,5 +395,7 @@ Note that this issue may impact any package that relies on the TextEncoder or Te
 
 This project is made possible by:
 
-* [DevAnywhere](https://devanywhere.io) - Expert mentorship for software builders, from junior developers to software leaders like VPE, CTO, and CEO.
+* Your donations:
+  - [Pay by credit/debit card with invoiced receipt](https://buy.stripe.com/cNi3cjgyNbY02magKZcwg05)
+  - paralleldrive.eth (Ethereum mainnet)
 * [EricElliottJS.com](https://ericelliottjs.com) - Learn JavaScript on demand with videos and interactive lessons.
