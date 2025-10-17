@@ -5,7 +5,6 @@ import process from "process";
 import { errorCauses, createError } from "error-causes";
 
 // Configuration objects (camelCase per javascript.mdc)
-const semverTypes = ["major", "minor", "patch"];
 
 const bumpAliases = {
   breaking: "major",
@@ -107,20 +106,20 @@ const runReleaseIt = (semverType) => {
 
 // Use error-causes handleErrors pattern
 const handleError = handleReleaseErrors({
-  ValidationError: ({ name, code, message, cause }) => {
+  ValidationError: ({ message, cause }) => {
     console.error(`❌ Validation failed: ${message}`);
     console.error("💡 Fix the issue and try again.");
     if (cause) console.error(`🔍 Root cause: ${cause.message || cause}`);
     process.exit(1);
   },
-  GitError: ({ name, code, message, cause }) => {
+  GitError: ({ message, cause }) => {
     console.error(`❌ Git command failed: ${message}`);
     console.error("💡 Check your git configuration and network connection.");
     if (cause?.command) console.error(`📝 Failed command: ${cause.command}`);
     if (cause?.message) console.error(`🔍 Root cause: ${cause.message}`);
     process.exit(1);
   },
-  ReleaseItError: ({ name, code, message, cause }) => {
+  ReleaseItError: ({ message, cause }) => {
     console.error(`❌ release-it failed: ${message}`);
     console.error("💡 Check the release-it output above for details.");
     if (cause?.message) console.error(`🔍 Root cause: ${cause.message}`);
