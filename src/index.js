@@ -80,6 +80,11 @@ const init = ({
   length = defaultLength,
   fingerprint = createFingerprint({ random }),
 } = {}) => {
+  if (length > bigLength) {
+    throw new Error(
+      `Length must be between 2 and ${bigLength}. Received: ${length}`
+    );
+  }
   return function cuid2() {
     const firstLetter = randomLetter(random);
 

@@ -66,6 +66,60 @@ describe("Cuid2", async (assert) => {
       expected: length,
     });
   }
+
+  {
+    const length = 33;
+    let errorThrown = false;
+
+    try {
+      init({ length });
+    } catch (error) {
+      errorThrown = true;
+    }
+
+    assert({
+      given: "a length greater than the maximum (33)",
+      should: "throw an error",
+      actual: errorThrown,
+      expected: true,
+    });
+  }
+
+  {
+    const length = 100;
+    let errorThrown = false;
+
+    try {
+      init({ length });
+    } catch (error) {
+      errorThrown = true;
+    }
+
+    assert({
+      given: "a length much greater than the maximum (100)",
+      should: "throw an error",
+      actual: errorThrown,
+      expected: true,
+    });
+  }
+
+  {
+    const length = 100;
+    let errorMessage = "";
+
+    try {
+      init({ length });
+    } catch (error) {
+      errorMessage = error.message;
+    }
+
+    assert({
+      given: "a length much greater than the maximum (100)",
+      should: "include the received length in the error message",
+      actual: errorMessage.includes("100"),
+      expected: true,
+    });
+  }
 });
 
 describe("createCounter", async (assert) => {
