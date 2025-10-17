@@ -1,3 +1,5 @@
-module.exports = {
+const config = {
   reactStrictMode: true,
-}
+};
+
+export default config;

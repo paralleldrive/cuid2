@@ -1,0 +1,59 @@
+---
+description: When writing JavaScript or TypeScript code, use this guide for JavaScript best practices and guidance
+globs: **/*.js,**/*.jsx,**/*.ts,**/*.tsx
+alwaysApply: false
+---
+
+# JavaScript/TypeScript guide
+
+Act as a top-tier software engineer with serious JavaScript/TypeScript discipline to carefully implement high quality software.
+
+## Before Writing Code
+
+- Read the lint and formatting rules.
+- Observe the project's relevant existing code.
+- Conform to existing code style, patterns, and conventions unless directed otherwise. Note: these instructions count as "directed otherwise" unless the user explicitly overrides them.
+
+Constraints {
+  Be concise.
+  Favor functional programming; keep functions short, pure, and composable.
+  Favor map, filter, reduce over manual loops.
+  Prefer immutability; use const, spread, and rest operators instead of mutation.
+  One job per function; separate mapping from IO.
+  Obey the projects lint and formatting rules.
+  Omit needless code and variables; prefer composition with partial application and point-free style.
+  Chain operations rather than introducing intermediate variables, e.g. `[x].filter(p).map(f)`
+  Avoid loose procedural sequences; compose clear pipelines instead.
+  Avoid `class` and `extends` as much as possible. Prefer composition of functions and data structures over inheritance.
+  Keep related code together; group by feature, not by technical type.
+  Put statements and expressions in positive form.
+  Use parallel code for parallel concepts. 
+  Avoid null/undefined arguments; use options objects instead.
+  Use concise syntax: arrow functions, object destructuring, array destructuring, template literals.
+  Avoid verbose property assignments. bad: `const a = obj.a;` good: `const { a } = obj;`
+  Assign reasonable defaults directly in function signatures.
+    `const createExpectedUser = ({ id = createId(), name = '', description = '' } = {}) => ({ id, name, description });`
+  Principle: Function callers should be able to understand the expected call signature by reading the function signature. This means:
+  Parameter values should be explicitly named and expressed in function signatures:
+    Bad: `const createUser = (payload = {}) => ({`
+    Good: `const createUser = ({ id = createId(), name = '', description = ''} = {}) =>`
+    Notice how default values also provide hints for type inference.
+  Avoid using || for defaults. Use parameter defaults instead. See above.
+  Prefer async/await or asyncPipe over raw promise chains.
+  Use strict equality (===).
+  Modularize by feature; one concern per file or function; prefer named exports.
+}
+
+NamingConstraints {
+  Use active voice.
+  Use clear, consistent naming.
+  Functions should be verbs. e.g. `increment()`, `filter()`.
+  Predicates and booleans should read like yes/no questions. e.g. `isActive`, `hasPermission`.
+  Prefer standalone verbs over noun.method. e.g. `createUser()` not `User.create()`.
+  Avoid noun-heavy and redundant names. e.g. `filter(fn, array)` not `matchingItemsFromArray(fn, array)`.
+  Avoid "doSomething" style. e.g. `notify()` not `Notifier.doNotification()`.
+  Lifecycle methods: prefer `beforeX` / `afterX` over `willX` / `didX`. e.g. `beforeUpdate()`.
+  Use strong negatives over weak ones: `isEmpty(thing)` not `!isDefined(thing)`.
+  Mixins and function decorators use `with${Thing}`. e.g. `withUser`, `withFeatures`, `withAuth`.
+  Avoid ALL_CAPS for constants. Since we use functional programming, there's no need for a hard distinction between constants and variables.
+}
