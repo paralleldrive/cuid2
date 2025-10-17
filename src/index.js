@@ -1,5 +1,6 @@
 /* global global, window, module */
 const { sha3_512: sha3 } = require("@noble/hashes/sha3");
+const BigNumber = require("bignumber.js");
 
 const defaultLength = 24;
 const bigLength = 32;
@@ -18,12 +19,12 @@ const createEntropy = (length = 4, random = Math.random) => {
  * MIT License Copyright (c) 2018 Juan Hernández Serrano
  */
 function bufToBigInt(buf) {
-  let bits = 8n;
+  let bits = 8;
 
-  let value = 0n;
+  let value = new BigNumber(0);
   for (const i of buf.values()) {
-    const bi = BigInt(i);
-    value = (value << bits) + bi;
+    const bi = new BigNumber(i);
+    value = value.multipliedBy(new BigNumber(2).pow(bits)).plus(bi);
   }
   return value;
 }
