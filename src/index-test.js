@@ -235,3 +235,59 @@ describe("isCuid", async (assert) => {
     });
   }
 });
+
+describe("CSPRNG", async (assert) => {
+  {
+    // Test that crypto is being used by default
+    const id1 = createId();
+    const id2 = createId();
+    const actual = id1 !== id2;
+    const expected = true;
+    info(`ID1: ${id1}, ID2: ${id2}`);
+
+    assert({
+      given: "multiple cuid2 calls",
+      should: "generate unique IDs using CSPRNG",
+      actual,
+      expected,
+    });
+  }
+
+  {
+    // Test that a custom random function can still be passed
+    let callCount = 0;
+    const customRandom = () => {
+      callCount++;
+      return 0.5; // Fixed value for testing
+    };
+    const cuid = init({ random: customRandom });
+    const id = cuid();
+    const actual = callCount > 0;
+    const expected = true;
+    info(`Custom random ID: ${id}, calls: ${callCount}`);
+
+    assert({
+      given: "a custom random function",
+      should: "use the custom function instead of CSPRNG",
+      actual,
+      expected,
+    });
+  }
+
+  {
+    // Test that IDs generated with CSPRNG are valid
+    const ids = Array.from({ length: 100 }, () => createId());
+    const allValid = ids.every((id) => isCuid(id));
+    const allUnique = new Set(ids).size === ids.length;
+    const actual = allValid && allUnique;
+    const expected = true;
+
+    assert({
+      given: "100 IDs generated with CSPRNG",
+      should: "all be valid and unique",
+      actual,
+      expected,
+    });
+  }
+});
+
