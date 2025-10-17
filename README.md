@@ -6,20 +6,18 @@ Need unique ids in your app? Forget UUIDs and GUIDs which often collide in large
 
 **Cuid2 is:**
 
-* **Secure:** It's not feasible to guess the next id, existing valid ids, or learn anything about the referenced data from the id. Cuid2 uses multiple, independent entropy sources and hashes them with a security-audited, NIST-standard cryptographically secure hashing algorithm (Sha3).
-* **Collision resistant:** It's extremely unlikely to generate the same id twice (by default, you'd need to generate roughly 4,000,000,000,000,000,000 ids ([`sqrt(36^(24-1) * 26) = 4.0268498e+18`](https://en.wikipedia.org/wiki/Birthday_problem#Square_approximation)) to reach 50% chance of collision.)
-* **Horizontally scalable:** Generate ids on multiple machines without coordination.
-* **Offline-compatible:** Generate ids without a network connection.
-* **URL and name-friendly:** No special characters.
-* **Fast and convenient:** No async operations. Won't introduce user-noticeable delays. Less than 5k, gzipped.
-* **But not *too fast*:** If you can hash too quickly you can launch parallel attacks to find duplicates or break entropy-hiding. For unique ids, the fastest runner loses the security race.
-
+- **Secure:** It's not feasible to guess the next id, existing valid ids, or learn anything about the referenced data from the id. Cuid2 uses multiple, independent entropy sources and hashes them with a security-audited, NIST-standard cryptographically secure hashing algorithm (Sha3).
+- **Collision resistant:** It's extremely unlikely to generate the same id twice (by default, you'd need to generate roughly 4,000,000,000,000,000,000 ids ([`sqrt(36^(24-1) * 26) = 4.0268498e+18`](https://en.wikipedia.org/wiki/Birthday_problem#Square_approximation)) to reach 50% chance of collision.)
+- **Horizontally scalable:** Generate ids on multiple machines without coordination.
+- **Offline-compatible:** Generate ids without a network connection.
+- **URL and name-friendly:** No special characters.
+- **Fast and convenient:** No async operations. Won't introduce user-noticeable delays. Less than 5k, gzipped.
+- **But not _too fast_:** If you can hash too quickly you can launch parallel attacks to find duplicates or break entropy-hiding. For unique ids, the fastest runner loses the security race.
 
 **Cuid2 is not good for:**
 
-* Sequential ids (see the [note on k-sortable ids](https://github.com/paralleldrive/cuid2#note-on-k-sortablesequentialmonotonically-increasing-ids), below)
-* High performance tight loops, such as render loops (if you don't need cross-host unique ids or security, consider a simple counter for this use-case, or try [Ulid](https://github.com/ulid/javascript) or [NanoId](https://github.com/ai/nanoid)).
-
+- Sequential ids (see the [note on k-sortable ids](https://github.com/paralleldrive/cuid2#note-on-k-sortablesequentialmonotonically-increasing-ids), below)
+- High performance tight loops, such as render loops (if you don't need cross-host unique ids or security, consider a simple counter for this use-case, or try [Ulid](https://github.com/ulid/javascript) or [NanoId](https://github.com/ai/nanoid)).
 
 ## Getting Started
 
@@ -34,7 +32,7 @@ yarn add @paralleldrive/cuid2
 ```
 
 ```js
-import { createId } from '@paralleldrive/cuid2';
+import { createId } from "@paralleldrive/cuid2";
 
 const ids = [
   createId(), // 'tz4a98xxat96iws9zmbrgj3a'
@@ -48,7 +46,7 @@ Using Jest? Jump to [Using with Jest](#using-in-jest).
 ### Configuration
 
 ```js
-import { init } from '@paralleldrive/cuid2';
+import { init } from "@paralleldrive/cuid2";
 
 // The init function returns a custom createId function with the specified
 // configuration. All configuration properties are optional.
@@ -60,29 +58,26 @@ const createId = init({
   length: 10,
   // A custom fingerprint for the host environment. This is used to help
   // prevent collisions when generating ids in a distributed system.
-  fingerprint: 'a-custom-host-fingerprint',
+  fingerprint: "a-custom-host-fingerprint",
 });
 
 console.log(
   createId(), // wjfazn7qnd
   createId(), // cerhuy9499
-  createId(), // itp2u4ozr4
+  createId() // itp2u4ozr4
 );
 ```
-
 
 ### Validation
 
 ```js
-import { createId, isCuid } from '@paralleldrive/cuid2';
-
+import { createId, isCuid } from "@paralleldrive/cuid2";
 
 console.log(
   isCuid(createId()), // true
-  isCuid('not a cuid'), // false
+  isCuid("not a cuid") // false
 );
 ```
-
 
 ## Trusted by Millions of Apps
 
@@ -102,14 +97,13 @@ Entropy is a measure of the total information in a system. In the context of uni
 
 Cuid2 is made up of the following entropy sources:
 
-* An initial letter to make the id a usable identifier in JavaScript and HTML/CSS
-* The current system time
-* Pseudorandom values
-* A session counter
-* A host fingerprint
+- An initial letter to make the id a usable identifier in JavaScript and HTML/CSS
+- The current system time
+- Pseudorandom values
+- A session counter
+- A host fingerprint
 
 The string is Base36 encoded, which means it contains only lowercase letters and the numbers: 0 - 9, with no special symbols.
-
 
 ### Horizontal scalability
 
@@ -125,7 +119,6 @@ Because of the nature of this problem, it's possible to build an app from the gr
 
 Alternatively, you've played it safe and you only let your database create ids. Writes only happen on a master database, and load is spread out over read replicas. But with this kind of strain, you have to start scaling your database writes horizontally, too, and suddenly your application starts to crawl (if the db is smart enough to guarantee unique ids between write hosts), or you start getting id collisions between different db hosts, so your write hosts don't agree about which ids represent which data.
 
-
 ### Performance
 
 Id generation should be fast enough that humans won't notice a delay, but too slow to feasibly brute force (even in parallel). That means no waiting around for asynchronous entropy pool requests, or cross-process/cross-network communication. Performance slows to impracticality in the browser. All sources of entropy need to be fast enough for synchronous access.
@@ -136,16 +129,13 @@ That situation has caused some clients to create ids that are only usable in a s
 
 If client side ID generation were stronger, the chances of collision would be much smaller, and the client could send complete records to the db for insertion without waiting for a full round-trip request to finish before using the ID.
 
-
 #### Tiny
 
 Page loads need to be FAST, and that means we can't waste a lot of JavaScript on a complex algorithm. Cuid2 is tiny. This is especially important for thick-client JavaScript applications.
 
-
 ### Secure
 
 Client-visible ids often need to have sufficient random data and entropy to make it practically impossible to try to guess valid IDs based on an existing, known id. That makes simple sequential ids unusable in the context of client-side generated database keys. Additionally, using V4 UUIDs is also not safe, because there are known attacks on several id generating algorithms that a sophisticated attacker can use to predict next ids. Cuid2 has been audited by security experts and artificial intelligence, and is considered safe to use for use-cases like secret sharing links.
-
 
 ### Portable
 
@@ -153,15 +143,15 @@ Most stronger forms of the UUID / GUID algorithms require access to OS services 
 
 #### Ports
 
-* [Cuid2 for Clojure](https://github.com/hden/cuid2) - [Haokang Den](https://github.com/hden)
-* [Cuid2 for ColdFusion](https://github.com/bennadel/CUID2-For-ColdFusion) - [Ben Nadel](https://github.com/bennadel)
-* [Cuid2 for Dart](https://github.com/obsidiaHQ/cuid2) - [George Mamar](https://github.com/obsidiaHQ)
-* [Cuid2 for Java](https://github.com/thibaultmeyer/cuid-java) - [Thibault Meyer](https://github.com/thibaultmeyer)
-* [Cuid2 for .NET](https://github.com/visus-io/cuid.net) - [Visus](https://github.com/xaevik)
-* [Cuid2 for PHP](https://github.com/visus-io/php-cuid2) - [Visus](https://github.com/xaevik)
-* [Cuid2 for Python](https://github.com/gordon-code/cuid2) - [Gordon Code](https://github.com/gordon-code)
-* [Cuid2 for Ruby](https://github.com/stulzer/cuid2/blob/main/lib/cuid2.rb) - [Rubens Stulzer](https://github.com/stulzer)
-* [Cuid2 for Rust](https://github.com/mplanchard/cuid-rust) - [Matthew Planchard](https://github.com/mplanchard)
+- [Cuid2 for Clojure](https://github.com/hden/cuid2) - [Haokang Den](https://github.com/hden)
+- [Cuid2 for ColdFusion](https://github.com/bennadel/CUID2-For-ColdFusion) - [Ben Nadel](https://github.com/bennadel)
+- [Cuid2 for Dart](https://github.com/obsidiaHQ/cuid2) - [George Mamar](https://github.com/obsidiaHQ)
+- [Cuid2 for Java](https://github.com/thibaultmeyer/cuid-java) - [Thibault Meyer](https://github.com/thibaultmeyer)
+- [Cuid2 for .NET](https://github.com/visus-io/cuid.net) - [Visus](https://github.com/xaevik)
+- [Cuid2 for PHP](https://github.com/visus-io/php-cuid2) - [Visus](https://github.com/xaevik)
+- [Cuid2 for Python](https://github.com/gordon-code/cuid2) - [Gordon Code](https://github.com/gordon-code)
+- [Cuid2 for Ruby](https://github.com/stulzer/cuid2/blob/main/lib/cuid2.rb) - [Rubens Stulzer](https://github.com/stulzer)
+- [Cuid2 for Rust](https://github.com/mplanchard/cuid-rust) - [Matthew Planchard](https://github.com/mplanchard)
 
 ## Improvements Over Cuid
 
@@ -177,7 +167,6 @@ The original Cuid had a maximum available entropy of about `3.71319E+29` (assumi
 
 The hashing function mixes all the sources of entropy together into a single value, so it's important we use a high quality hashing algorithm. We have tested billions of ids with Cuid2 with zero collisions detected to-date.
 
-
 ### More Portable
 
 The original Cuid used different methods to generate fingerprints across different kinds of hosts, including browsers, Node, and React Native. Unfortunately, this caused several compatability problems across the cuid user ecosystem.
@@ -190,16 +179,13 @@ Cuid2 uses a list of all global names in the JavaScript environment. Hashing it 
 
 In Cuid2, we use a tiny, fast, security-audited, NIST-standardized hash function and we seed it with random entropy, so on production environments where the globals are all identical, we lose the unique fingerprint, but still get random entropy to replace it, strengthening collision resistance.
 
-
 ### Deterministic Length
 
 Length was non-deterministic in Cuid. This worked fine in almost all cases, but proved to be problematic for some data structure uses, forcing some users to create wrapper code to pad the output. We recommend sticking to the defaults for most cases, but if you don't need strong uniqueness guarantees, (e.g., your use-case is something like username or URL disambiguation), it can be fine to use a shorter version.
 
-
 ### More Efficient Session Counter Entropy
 
 The original Cuid wasted entropy on session counters that were not always used, rarely filled, and sometimes rolled over, meaning they could collide with each other if you generate enough ids in a tight loop, reducing their effectiveness. Cuid2 initializes the counter with a random number so the entropy is never wasted. It also uses the full precision of the native JS number type. If you only generate a single id, the counter just extends the random entropy, rather than wasting digits, providing even stronger anti-collision protection.
-
 
 ### Parameterized Length
 
@@ -208,12 +194,11 @@ Different use-cases have different needs for entropy resistance. Sometimes, a sh
 By default, you'd need to generate `~4.0268498e+18` ids to reach a 50% chance of collision, and at maximum length, you'd need to generate `~6.7635614e+24` ids to reach 50% odds of collision. To use a custom length, import the `init` function, which takes configuration options:
 
 ```js
-import { init } from '@paralleldrive/cuid2';
+import { init } from "@paralleldrive/cuid2";
 const length = 10; // 50% odds of collision after ~51,386,368 ids
 const cuid = init({ length });
 console.log(cuid()); // nw8zzfaa4v
 ```
-
 
 ### Enhanced Security
 
@@ -221,17 +206,15 @@ The original Cuid leaked details about the id, including very limited data from 
 
 Due to the hashing algorithm, it should not be practically possible to recover any of the entropy sources from the generated ids. Cuid used roughly monotonically increasing ids for database performance reasons. Some people abused them to select data by creation date. If you want to be able to sort items by creation date, we recommend making a separate, indexed `createdAt` field in your database instead of using monotonic ids because:
 
-* It's easy to trick a client system to generate ids in the past or future.
-* Order is not guaranteed across multiple hosts generating ids at nearly the same time.
-* Deterministically monotic resolution was never guaranteed.
+- It's easy to trick a client system to generate ids in the past or future.
+- Order is not guaranteed across multiple hosts generating ids at nearly the same time.
+- Deterministically monotic resolution was never guaranteed.
 
 In Cuid2, the hashing algorithm uses a salt. The salt is a random string which is added to the input entropy sources before the hashing function is applied. This makes it much more difficult for an attacker to guess valid ids, as the salt changes with each id, meaning the attacker is unable to use any existing ids as a basis for guessing others.
-
 
 ## Comparisons
 
 Security was the primary motivation for creating Cuid2. Our ids should be default-secure for the same reason we use https instead of http. The problem is, all our current id specifications are based on decades-old standards that were never designed with security in mind, optimizing for database performance charactaristics which are no longer relevant in modern, distributed applications. Almost all of the popular ids today optimize for being k-sortable, which was important 10 years ago. Here's what k-sortable means, and why it's no longer as important is it was when we created the Cuid specification which [helped inspire current standards like UUID v6 - v8](https://www.ietf.org/archive/id/draft-ietf-uuidrev-rfc4122bis-00.html#section-11.2):
-
 
 ### Note on K-Sortable/Sequential/Monotonically Increasing Ids
 
@@ -253,7 +236,6 @@ So what kinds of operations suffer from a non-sequential id? Paged, sorted opera
 
 The worst part of k-sortable ids is their impact on security. k-sortable = insecure.
 
-
 ### The Contenders
 
 We're unaware of any standard or library in the space that adequately meets all of our requirements. We'll use the following criteria to filter a list of commonly used alternatives. Let's start with the contenders:
@@ -262,26 +244,24 @@ Database increment (Int, BigInt, AutoIncrement), [UUID v1 - v8](https://www.ietf
 
 Here are the disqualifiers we care about:
 
-* **Leaks information:** Database auto-increment, all UUIDs (except V4 and including V6 - V8), Ulid, Snowflake, ShardingId, pushId, ObjectId, KSUID
-* **Collision Prone:** Database auto-increment, v4 UUID
-* **Not cryptographically secure random output:** Database auto-increment, UUID v1, UUID v4
-* **Requires distributed coordination:** Snowflake, ShardingID, database increment
-* **Not URL or name friendly:** UUID (too long, dashes), Ulid (too long), UUID v7 (too long) - anything else that supports special characters like dashes, spaces, underscores, #$%^&, etc.
-* **Too fast:** UUID v1, UUID v4, NanoId, Ulid, Xid
-
+- **Leaks information:** Database auto-increment, all UUIDs (except V4 and including V6 - V8), Ulid, Snowflake, ShardingId, pushId, ObjectId, KSUID
+- **Collision Prone:** Database auto-increment, v4 UUID
+- **Not cryptographically secure random output:** Database auto-increment, UUID v1, UUID v4
+- **Requires distributed coordination:** Snowflake, ShardingID, database increment
+- **Not URL or name friendly:** UUID (too long, dashes), Ulid (too long), UUID v7 (too long) - anything else that supports special characters like dashes, spaces, underscores, #$%^&, etc.
+- **Too fast:** UUID v1, UUID v4, NanoId, Ulid, Xid
 
 Here are the qualifiers we care about:
 
-* **Secure - No leaked info, attack-resistant:** Cuid2, NanoId (Medium - trusts web crypto API entropy).
-* **Collision resistant:** Cuid2, Cuid v1, NanoId, Snowflake, KSUID, XID, Ulid, ShardingId, ObjectId, UUID v6 - v8.
-* **Horizontally scalable:** Cuid2, Cuid v1, NanoId, ObjectId, Ulid, KSUID, Xid, ShardingId, ObjectId, UUID v6 - v8.
-* **Offline-compatible:** Cuid2, Cuid v1, NanoId, Ulid, UUID v6 - v8.
-* **URL and name-friendly:** Cuid2, Cuid v1, NanoId (with custom alphabet).
-* **Fast and convenient:** Cuid2, Cuid v1, NanoId, Ulid, KSUID, Xid, UUID v4, UUID v7.
-* **But not *too fast*:** Cuid2, Cuid v1, UUID v7, Snowflake, ShardingId, ObjectId.
+- **Secure - No leaked info, attack-resistant:** Cuid2, NanoId (Medium - trusts web crypto API entropy).
+- **Collision resistant:** Cuid2, Cuid v1, NanoId, Snowflake, KSUID, XID, Ulid, ShardingId, ObjectId, UUID v6 - v8.
+- **Horizontally scalable:** Cuid2, Cuid v1, NanoId, ObjectId, Ulid, KSUID, Xid, ShardingId, ObjectId, UUID v6 - v8.
+- **Offline-compatible:** Cuid2, Cuid v1, NanoId, Ulid, UUID v6 - v8.
+- **URL and name-friendly:** Cuid2, Cuid v1, NanoId (with custom alphabet).
+- **Fast and convenient:** Cuid2, Cuid v1, NanoId, Ulid, KSUID, Xid, UUID v4, UUID v7.
+- **But not _too fast_:** Cuid2, Cuid v1, UUID v7, Snowflake, ShardingId, ObjectId.
 
 Cuid2 is the only solution that passed all of our tests.
-
 
 ### NanoId and Ulid
 
@@ -291,20 +271,17 @@ Along with using cryptographically secure methods, Cuid2 supplies its own known 
 
 **Too fast:** NanoId and Ulid are also very fast. But that's not a good thing. The faster you can generate ids, the faster you can run collision attacks. Bad guys looking for statistical anomalies in the distribution of ids can use the speed of NanoId to their advantage. Cuid2 is fast enough to be convenient, but not so fast that it's a security risk.
 
-
 #### Entropy Security Comparison
 
-* NanoId Entropy: Web Crypto.
-* Ulid Entropy: Web Crypto + time stamp (leaked).
-* Cuid2 Entropy: Web Crypto + time stamp + counter + host fingerprint + hashing algorithm.
-
+- NanoId Entropy: Web Crypto.
+- Ulid Entropy: Web Crypto + time stamp (leaked).
+- Cuid2 Entropy: Web Crypto + time stamp + counter + host fingerprint + hashing algorithm.
 
 ## Testing
 
 Before each commit, we test over 10 million ids generated in parallel across 7 different CPU cores. With each batch of tests, we run a histogram analysis to ensure an even, random distribution across the entire entropy range. Any bias would make it more likely for ids to collide, so our tests will automatically fail if it finds any.
 
 <img width="783" alt="Screen Shot 2022-12-30 at 6 19 15 PM" src="public/histogram.png">
-
 
 We also generate randograms and do spot visual inspections.
 
@@ -351,18 +328,18 @@ Install jest-environment-jsdom. Make sure to use the same version as your jest. 
 Create `jsdom-env.js` file in the root:
 
 ```js
-const JSDOMEnvironmentBase = require('jest-environment-jsdom');
+const JSDOMEnvironmentBase = require("jest-environment-jsdom");
 
-Object.defineProperty(exports, '__esModule', {
-    value: true
+Object.defineProperty(exports, "__esModule", {
+  value: true,
 });
 
 class JSDOMEnvironment extends JSDOMEnvironmentBase {
-    constructor(...args) {
-        const { global } = super(...args);
+  constructor(...args) {
+    const { global } = super(...args);
 
-        global.Uint8Array = Uint8Array;
-    }
+    global.Uint8Array = Uint8Array;
+  }
 }
 
 exports.default = JSDOMEnvironment;
@@ -382,6 +359,27 @@ Update scripts to use the custom environment:
 }
 ```
 
+#### TextEncoder is not defined
+
+CUID2 requires `TextEncoder` for hashing, which is available in:
+
+- All modern browsers
+- Node.js 11+
+- Deno and Bun
+
+If you're running in an older environment and see `TextEncoder is not defined` errors, you can add a polyfill:
+
+```bash
+npm install fastestsmallesttextencoderdecoder
+```
+
+Then import it before CUID2:
+
+```js
+import "fastestsmallesttextencoderdecoder";
+import { createId } from "@paralleldrive/cuid2";
+```
+
 #### JSDOM is Missing Features
 
 JSDOM doesn't support TextEncoder and TextDecoder, refer jsdom/jsdom#2524.
@@ -390,12 +388,11 @@ In Jest, features like Uint8Array/TextEncoder/TextDecoder may be available in th
 
 Note that this issue may impact any package that relies on the TextEncoder or TextDecorder standards. If you would like to use a simple test runner that just works, try [Riteway](https://github.com/paralleldrive/riteway).
 
-
 ## Sponsors
 
 This project is made possible by:
 
-* Your donations:
+- Your donations:
   - [Pay by credit/debit card with invoiced receipt](https://buy.stripe.com/cNi3cjgyNbY02magKZcwg05)
   - paralleldrive.eth (Ethereum mainnet)
-* [EricElliottJS.com](https://ericelliottjs.com) - Learn JavaScript on demand with videos and interactive lessons.
+- [EricElliottJS.com](https://ericelliottjs.com) - Learn JavaScript on demand with videos and interactive lessons.

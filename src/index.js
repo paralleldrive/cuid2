@@ -1,5 +1,5 @@
 /* global global, window */
-import { sha3_512 as sha3 } from "@noble/hashes/sha3";
+import { sha3_512 as sha3 } from "@noble/hashes/sha3.js";
 
 const defaultLength = 24;
 const bigLength = 32;
@@ -31,7 +31,10 @@ function bufToBigInt(buf) {
 const hash = (input = "") => {
   // Drop the first character because it will bias the histogram
   // to the left.
-  return bufToBigInt(sha3(input)).toString(36).slice(1);
+  const encoder = new TextEncoder();
+  return bufToBigInt(sha3(encoder.encode(input)))
+    .toString(36)
+    .slice(1);
 };
 
 const alphabet = Array.from({ length: 26 }, (x, i) =>

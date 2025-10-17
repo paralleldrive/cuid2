@@ -61,7 +61,7 @@
     "watch": "^0.13.0"
   },
   "dependencies": {
-    "@noble/hashes": "^1.7.1",
+    "@noble/hashes": "^2.0.1",
     "error-causes": "^3.0.2"
   },
   "version": "2.2.2"
