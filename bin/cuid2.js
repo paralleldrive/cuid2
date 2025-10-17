@@ -8,7 +8,7 @@ import { join } from "path";
 const args = process.argv.slice(2);
 
 // Handle --install-alias
-if (args.includes("--install-alias")) {
+if (args.includes("--install")) {
   const shellConfigFiles = [".zshrc", ".bashrc", ".bash_profile", ".profile"];
 
   const aliasCommand = 'alias cuid="npx @paralleldrive/cuid2"';
