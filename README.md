@@ -31,6 +31,59 @@ Or
 yarn add @paralleldrive/cuid2
 ```
 
+### CLI Usage
+
+First, install the shell alias for easier access:
+
+```bash
+# Install shell alias (recommended)
+npx @paralleldrive/cuid2 --install-alias
+# ✓ Alias added to .zshrc
+# Run: source ~/.zshrc
+```
+
+Now generate IDs from the command line:
+
+```bash
+# Generate a single ID
+cuid
+# tz4a98xxat96iws9zmbrgj3a
+
+# Generate multiple IDs
+cuid 5
+# pfh0haxfpzowht3oi213cqos
+# nc6bzmkmd014706rfda898to
+# ...
+
+# Generate a short slug (5 characters)
+cuid --slug
+# ra3f3
+
+# Generate multiple slugs
+cuid --slug 3
+# cgejt
+# howzq
+# sd67n
+
+# Custom length
+cuid --length 10
+# c94jt94rt4
+
+# Custom fingerprint
+cuid --fingerprint "my-server" 2
+# mv8nuzaehk1l9pww1wlmzqax
+# n04n62wsow10n3l4huidgkle
+
+# Combine options
+cuid --length 8 --fingerprint "test"
+# ysk16xlf
+
+# Without alias, use the full command
+npx @paralleldrive/cuid2
+```
+
+### Programmatic Usage
+
 ```js
 import { createId } from "@paralleldrive/cuid2";
 
