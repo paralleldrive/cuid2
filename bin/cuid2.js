@@ -9,26 +9,21 @@ const args = process.argv.slice(2);
 
 // Handle --install-alias
 if (args.includes("--install-alias")) {
-  const shellConfigFiles = [
-    ".zshrc",
-    ".bashrc",
-    ".bash_profile",
-    ".profile",
-  ];
-  
+  const shellConfigFiles = [".zshrc", ".bashrc", ".bash_profile", ".profile"];
+
   const aliasCommand = 'alias cuid="npx @paralleldrive/cuid2"';
   const home = homedir();
-  
+
   let installed = false;
-  
+
   for (const configFile of shellConfigFiles) {
     const configPath = join(home, configFile);
-    
+
     if (existsSync(configPath)) {
       const content = readFileSync(configPath, "utf8");
-      
+
       // Check if alias already exists
-      if (content.includes('alias cuid=')) {
+      if (content.includes("alias cuid=")) {
         console.log(`✓ Alias already exists in ${configFile}`);
         installed = true;
       } else {
@@ -41,13 +36,13 @@ if (args.includes("--install-alias")) {
       }
     }
   }
-  
+
   if (!installed) {
     console.log("✗ No shell config file found");
     console.log(`  You can manually add: ${aliasCommand}`);
     process.exit(1);
   }
-  
+
   process.exit(0);
 }
 
