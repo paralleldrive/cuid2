@@ -538,7 +538,12 @@ export const CodeBlock = ({ children, language = "javascript" }) => {
 const DarkModeContext = createContext();
 
 export const DarkModeProvider = ({ children }) => {
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window !== "undefined" && window.matchMedia) {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    return false;
+  });
 
   const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
 
