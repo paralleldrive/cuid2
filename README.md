@@ -37,9 +37,12 @@ First, install the shell alias for easier access:
 
 ```bash
 # Install shell alias (recommended)
-npx @paralleldrive/cuid2 --install-alias
+npx @paralleldrive/cuid2 --install
 # ✓ Alias added to .zshrc
 # Run: source ~/.zshrc
+
+# View all CLI options
+npx @paralleldrive/cuid2 --help
 ```
 
 Now generate IDs from the command line:
@@ -80,6 +83,22 @@ cuid --length 8 --fingerprint "test"
 
 # Without alias, use the full command
 npx @paralleldrive/cuid2
+```
+
+#### CLI Options
+
+```bash
+cuid2 [count] [options]
+
+Arguments:
+  count              Number of IDs to generate (default: 1)
+
+Options:
+  --slug             Generate a short 5-character ID
+  --length <n>       Custom ID length (default: 24)
+  --fingerprint <s>  Custom fingerprint for ID generation
+  --install          Install shell alias 'cuid' → 'npx @paralleldrive/cuid2'
+  --help, -h         Show help message
 ```
 
 ### Programmatic Usage

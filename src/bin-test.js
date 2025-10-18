@@ -114,4 +114,30 @@ describe("CLI bin/cuid2.js", async (assert) => {
       expected: true,
     });
   }
+
+  {
+    const output = runCli("--help");
+    const hasUsage = output.includes("Usage:");
+    const hasOptions = output.includes("Options:");
+    const hasExamples = output.includes("Examples:");
+
+    assert({
+      given: "the help flag",
+      should: "display usage information with options and examples",
+      actual: hasUsage && hasOptions && hasExamples,
+      expected: true,
+    });
+  }
+
+  {
+    const output = runCli("-h");
+    const hasUsage = output.includes("Usage:");
+
+    assert({
+      given: "the short help flag",
+      should: "display usage information",
+      actual: hasUsage,
+      expected: true,
+    });
+  }
 });
