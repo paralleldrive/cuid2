@@ -7,8 +7,36 @@ import { join } from "path";
 
 const args = process.argv.slice(2);
 
+// Handle --help
+if (args.includes("--help") || args.includes("-h")) {
+  console.log(`
+cuid2 - Secure, collision-resistant ID generator
+
+Usage: cuid2 [count] [options]
+
+Arguments:
+  count              Number of IDs to generate (default: 1)
+
+Options:
+  --slug             Generate a short 5-character ID
+  --length <n>       Custom ID length (default: 24)
+  --fingerprint <s>  Custom fingerprint for ID generation
+  --install          Install shell alias 'cuid' → 'npx @paralleldrive/cuid2'
+  --help, -h         Show this help message
+
+Examples:
+  cuid2                           # Generate one ID
+  cuid2 5                         # Generate 5 IDs
+  cuid2 --slug                    # Generate a short ID (5 chars)
+  cuid2 --length 10               # Generate 10-character ID
+  cuid2 --fingerprint "server1"   # Generate ID with custom fingerprint
+  cuid2 --install                 # Install shell alias
+  `);
+  process.exit(0);
+}
+
 // Handle --install-alias
-if (args.includes("--install-alias")) {
+if (args.includes("--install")) {
   const shellConfigFiles = [".zshrc", ".bashrc", ".bash_profile", ".profile"];
 
   const aliasCommand = 'alias cuid="npx @paralleldrive/cuid2"';
