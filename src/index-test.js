@@ -1,6 +1,6 @@
-const { describe } = require("riteway");
-const BigNumber = require("bignumber.js");
-const {
+import { describe } from "riteway";
+import BigNumber from "bignumber.js";
+import {
   createId,
   init,
   getConstants,
@@ -8,9 +8,9 @@ const {
   bufToBigInt,
   createFingerprint,
   isCuid,
-} = require("./index");
+} from "./index.js";
 
-const { info } = require("./test-utils.js");
+import { info } from "./test-utils.js";
 
 describe("Cuid2", async (assert) => {
   {
@@ -65,6 +65,60 @@ describe("Cuid2", async (assert) => {
       should: "return a cuid with the specified larger length",
       actual: id.length,
       expected: length,
+    });
+  }
+
+  {
+    const length = 33;
+    let errorThrown = false;
+
+    try {
+      init({ length });
+    } catch (error) {
+      errorThrown = true;
+    }
+
+    assert({
+      given: "a length greater than the maximum (33)",
+      should: "throw an error",
+      actual: errorThrown,
+      expected: true,
+    });
+  }
+
+  {
+    const length = 100;
+    let errorThrown = false;
+
+    try {
+      init({ length });
+    } catch (error) {
+      errorThrown = true;
+    }
+
+    assert({
+      given: "a length much greater than the maximum (100)",
+      should: "throw an error",
+      actual: errorThrown,
+      expected: true,
+    });
+  }
+
+  {
+    const length = 100;
+    let errorMessage = "";
+
+    try {
+      init({ length });
+    } catch (error) {
+      errorMessage = error.message;
+    }
+
+    assert({
+      given: "a length much greater than the maximum (100)",
+      should: "include the received length in the error message",
+      actual: errorMessage.includes("100"),
+      expected: true,
     });
   }
 });
