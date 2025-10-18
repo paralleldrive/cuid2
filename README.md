@@ -458,7 +458,7 @@ JSDOM doesn't support TextEncoder and TextDecoder, refer jsdom/jsdom#2524.
 
 In Jest, features like Uint8Array/TextEncoder/TextDecoder may be available in the jsdom environment but may produce results different from the platform standards. These are known bugs which may be resolved by jsdom at some point, but there is no clear ETA.
 
-Note that this issue may impact any package that relies on the TextEncoder or TextDecorder standards. If you would like to use a simple test runner that just works, try [Riteway](https://github.com/paralleldrive/riteway).
+Note that this issue may impact any package that relies on the TextEncoder or TextDecoder standards. If you would like to use a simple test runner that just works, try [Riteway](https://github.com/paralleldrive/riteway).
 
 ## Sponsors
 
