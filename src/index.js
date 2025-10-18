@@ -4,11 +4,37 @@ import { sha3_512 as sha3 } from "@noble/hashes/sha3.js";
 const defaultLength = 24;
 const bigLength = 32;
 
-const createEntropy = (length = 4, random = Math.random) => {
+/**
+ * A cryptographically secure random number generator that mimics Math.random()
+ * Uses the Web Crypto API which is available in both modern browsers and Node.js
+ * Returns a random float in the range [0, 1) just like Math.random()
+ */
+const createRandom = () => {
+  // Use globalThis.crypto which works in both Node.js and browsers
+  if (
+    typeof globalThis !== "undefined" &&
+    globalThis.crypto &&
+    typeof globalThis.crypto.getRandomValues === "function"
+  ) {
+    return () => {
+      // Generate a random 32-bit unsigned integer
+      const buffer = new Uint32Array(1);
+      globalThis.crypto.getRandomValues(buffer);
+      // Convert to a float in [0, 1) by dividing by 2^32
+      return buffer[0] / 0x100000000;
+    };
+  }
+  // Fallback to Math.random if crypto is not available
+  return Math.random;
+};
+
+const random = createRandom();
+
+const createEntropy = (length = 4, rand = random) => {
   let entropy = "";
 
   while (entropy.length < length) {
-    entropy = entropy + Math.floor(random() * 36).toString(36);
+    entropy = entropy + Math.floor(rand() * 36).toString(36);
   }
   return entropy;
 };
@@ -41,8 +67,7 @@ const alphabet = Array.from({ length: 26 }, (x, i) =>
   String.fromCharCode(i + 97)
 );
 
-const randomLetter = (random) =>
-  alphabet[Math.floor(random() * alphabet.length)];
+const randomLetter = (rand) => alphabet[Math.floor(rand() * alphabet.length)];
 
 /*
 This is a fingerprint of the host environment. It is used to help
@@ -56,12 +81,12 @@ const createFingerprint = ({
     : typeof window !== "undefined"
     ? window
     : {},
-  random = Math.random,
+  random: rand = random,
 } = {}) => {
   const globals = Object.keys(globalObj).toString();
   const sourceString = globals.length
-    ? globals + createEntropy(bigLength, random)
-    : createEntropy(bigLength, random);
+    ? globals + createEntropy(bigLength, rand)
+    : createEntropy(bigLength, rand);
 
   return hash(sourceString).substring(0, bigLength);
 };
@@ -78,10 +103,10 @@ const init = ({
   // Fallback if the user does not pass in a CSPRNG. This should be OK
   // because we don't rely solely on the random number generator for entropy.
   // We also use the host fingerprint, current time, and a session counter.
-  random = Math.random,
-  counter = createCounter(Math.floor(random() * initialCountMax)),
+  random: rand = random,
+  counter = createCounter(Math.floor(rand() * initialCountMax)),
   length = defaultLength,
-  fingerprint = createFingerprint({ random }),
+  fingerprint = createFingerprint({ random: rand }),
 } = {}) => {
   if (length > bigLength) {
     throw new Error(
@@ -89,7 +114,7 @@ const init = ({
     );
   }
   return function cuid2() {
-    const firstLetter = randomLetter(random);
+    const firstLetter = randomLetter(rand);
 
     // If we're lucky, the `.toString(36)` calls may reduce hashing rounds
     // by shortening the input to the hash function a little.
@@ -99,7 +124,7 @@ const init = ({
     // The salt should be long enough to be globally unique across the full
     // length of the hash. For simplicity, we use the same length as the
     // intended id output.
-    const salt = createEntropy(length, random);
+    const salt = createEntropy(length, rand);
     const hashInput = `${time + salt + count + fingerprint}`;
 
     return `${firstLetter + hash(hashInput).substring(1, length)}`;
