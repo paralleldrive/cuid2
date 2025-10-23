@@ -12,6 +12,12 @@
     "index.d.ts",
     "bin/cuid2.js"
   ],
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "types": "./index.d.ts"
+    }
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
