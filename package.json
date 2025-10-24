@@ -65,5 +65,5 @@
   "dependencies": {
     "@noble/hashes": "^1.1.5"
   },
-  "version": "2.2.2"
+  "version": "2.3.1"
 }
