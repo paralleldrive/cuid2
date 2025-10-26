@@ -3,6 +3,14 @@
   "private": false,
   "type": "module",
   "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "default": "./index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "bin": {
     "cuid2": "./bin/cuid2.js"
   },

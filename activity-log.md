@@ -1,5 +1,9 @@
 # Activity Log
 
+## 2025-10-26
+
+- 🐛 - add exports field to package.json to resolve Node.js DEP0151 deprecation warning
+
 ## 2025-10-07
 
 - 🚀 - modernize release script with custom Node.js implementation including error handling, branch validation, and bump type aliases
