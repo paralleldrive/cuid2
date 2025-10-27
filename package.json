@@ -14,9 +14,11 @@
   ],
   "exports": {
     ".": {
-      "import": "./src/index.js",
-      "types": "./index.d.ts"
-    }
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "default": "./index.js"
+    },
+    "./package.json": "./package.json"
   },
   "scripts": {
     "dev": "next dev",
