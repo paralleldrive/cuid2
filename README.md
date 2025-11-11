@@ -1,4 +1,5 @@
 # Cuid2
+[![SudoLang AIDD](https://img.shields.io/badge/✨_SudoLang_AIDD-black)](https://github.com/paralleldrive/aidd)
 
 Secure, collision-resistant ids optimized for horizontal scaling and performance. Next generation UUIDs.
 
