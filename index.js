@@ -1,6 +1,6 @@
-const { createId, init, getConstants, isCuid } = require("./src/index");
+import { createId, init, getConstants, isCuid } from "./src/index.js";
 
-module.exports.createId = createId;
-module.exports.init = init;
-module.exports.getConstants = getConstants;
-module.exports.isCuid = isCuid;
+export { createId };
+export { init };
+export { getConstants };
+export { isCuid };

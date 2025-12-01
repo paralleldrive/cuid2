@@ -1,24 +1,25 @@
-const { createId } = require("./index.js");
+import { createId } from "./index.js";
+import BigNumber from "bignumber.js";
 
-const info = (txt) => console.log(`# - ${txt}`);
+export const info = (txt) => console.log(`# - ${txt}`);
 
-const idToBigInt = (id, _, __, radix = 36) =>
+export const idToBigInt = (id, _, __, radix = 36) =>
   [...id.toString()].reduce(
-    (r, v) => r * BigInt(radix) + BigInt(parseInt(v, radix)),
-    0n
+    (r, v) => r.multipliedBy(radix).plus(parseInt(v, radix)),
+    new BigNumber(0)
   );
 
-const buildHistogram = (numbers, bucketCount = 20) => {
+export const buildHistogram = (numbers, bucketCount = 20) => {
   const buckets = Array(bucketCount).fill(0);
   let counter = 1;
   const bucketLength = Math.ceil(
-    Number(BigInt(36 ** 23) / BigInt(bucketCount))
+    Number(new BigNumber(36).pow(23).dividedBy(bucketCount))
   );
 
   for (const number of numbers) {
     if (counter % bucketLength === 0) console.log(number);
 
-    const bucket = Math.floor(Number(number / BigInt(bucketLength)));
+    const bucket = Math.floor(Number(number.dividedBy(bucketLength)));
     if (counter % bucketLength === 0) console.log(bucket);
 
     buckets[bucket] += 1;
@@ -27,7 +28,7 @@ const buildHistogram = (numbers, bucketCount = 20) => {
   return buckets;
 };
 
-const createIdPool = async ({ max = 100000 } = {}) => {
+export const createIdPool = async ({ max = 100000 } = {}) => {
   const set = new Set();
 
   for (let i = 0; i < max; i++) {
@@ -45,8 +46,3 @@ const createIdPool = async ({ max = 100000 } = {}) => {
   const histogram = buildHistogram(numbers);
   return { ids, numbers, histogram };
 };
-
-module.exports.createIdPool = createIdPool;
-module.exports.buildHistogram = buildHistogram;
-module.exports.info = info;
-module.exports.idToBigInt = idToBigInt;

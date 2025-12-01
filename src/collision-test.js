@@ -1,13 +1,13 @@
-const { describe } = require("riteway");
-const { Worker } = require("worker_threads");
+import { describe } from "riteway";
+import { Worker } from "worker_threads";
 
-const { info } = require("./test-utils.js");
+import { info } from "./test-utils.js";
 
 // This is the code that will be run in each worker thread.
 // It creates an id pool and returns it.
 const workerCode = `
-  const { parentPort } = require('node:worker_threads');
-  const { createIdPool } = require('./src/test-utils.js');
+  import { parentPort } from 'node:worker_threads';
+  import { createIdPool } from './src/test-utils.js';
   const { max } = JSON.parse(process.argv[2]);
   createIdPool({ max }).then((idPool) => parentPort.postMessage(idPool));
 `;

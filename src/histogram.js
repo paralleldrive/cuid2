@@ -1,5 +1,5 @@
-const { describe } = require("riteway");
-const { createIdPool, info } = require("./test-utils.js");
+import { describe } from "riteway";
+import { createIdPool, info } from "./test-utils.js";
 
 describe("Histogram", async (assert) => {
   const n = 100000;

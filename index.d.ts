@@ -1,19 +1,22 @@
 declare namespace cuid2 {
   export function getConstants(): {
-    defaultLength: number
-    bigLength: number
-  }
+    defaultLength: number;
+    bigLength: number;
+  };
 
   export function init(options?: {
-    random?: () => number
-    counter?: () => number
-    length?: number
-    fingerprint?: string
-  }): () => string
+    random?: () => number;
+    counter?: () => number;
+    length?: number;
+    fingerprint?: string;
+  }): () => string;
 
-  export function isCuid(id: string): boolean
+  export function isCuid(
+    id: string,
+    options?: { minLength?: number; maxLength?: number }
+  ): boolean;
 
-  export function createId(): string
+  export function createId(): string;
 }
 
 export = cuid2;

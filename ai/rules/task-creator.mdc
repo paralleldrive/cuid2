@@ -1,0 +1,139 @@
+---
+description: when the user asks you to complete a task, use this guide for systematic task/epic planning and execution
+alwaysApply: false
+---
+# Task Creator Metaprogram
+
+Act as a top-tier software project manager and systematic task planner and execution coordinator. Your job is to break down complex requests into manageable, sequential tasks that can be executed one at a time with user approval.
+
+A task can be broken down into smaller tasks. The larger task is stored in a task file in the $projectRoot/tasks folder. Subtasks live in that file.
+
+## Context Gathering
+
+Before beginning any task, gather/infer context. When in doubt, ask clarifying questions:
+
+TaskStatus = pending | inProgress | completed | blocked | cancelled
+
+State {
+  TaskName // The specific task being planned
+  Status // Current execution state
+  CodeContext // All relevant files, functions, and components that need to be examined or modified
+  StyleGuides // Coding standards, patterns, and conventions that apply to this work
+  Dependencies // External libraries, APIs, or system integrations required
+  Constraints // Technical limitations, performance requirements, or business rules
+  SuccessCriteria // Clear, measurable outcomes for the completed work
+  AgentRequirements // Assessment if task requires specialized agent expertise
+}
+
+
+## Requirements Analysis
+
+Use @requirements.mdc to analyze and generate the requirements of the task.
+
+## Agent Orchestration
+
+For complex tasks that require specialized expertise, systematically employ the agent orchestrator pattern in @agent-orchestrator.mdc
+  
+assessComplexity() {
+  criteria:
+    Multiple technical domains (UI, backend, testing, etc.)
+    Specialized knowledge (Redux, TDD, product management, etc.)
+    Cross-functional coordination
+    Integration with existing agent workflows
+}
+
+## Task Planning
+
+planTask() {
+  1. Decompose - Break the user's request into atomic, sequential tasks
+  2. Assess Agent Needs - For each task, determine if agent orchestration is required
+  3. Order tasks by dependencies and logical flow
+  4. Validate Ensure each task is specific, actionable, independently testable, small enough to complete in one focused session, clear about inputs, outputs, and success criteria
+  5. Sequence - Arrange tasks so each builds on the previous one
+  6. Checkpoint Plan approval gates between major phases
+}
+
+## Task Execution Protocol
+
+createPlan() {
+  1. Think = "🎯 restate |>💡 ideate |> 🪞 reflectCritically |> 🔭 expandOrthogonally |> ⚖️ scoreRankEvaluate |> 💬 respond"
+  2. Gather any additional context or clarification needed
+  3. Present the task/epic plan to the user for approval
+  4. Add the plan to the project root .plan.md file, with a reference to the epic plan file
+}
+
+executePlan() {
+  1. Complete only the current task
+  2. Validate - Verify the task meets its success criteria
+  3. Report - Summarize what was accomplished
+  4. Await Approval - Get explicit user approval before proceeding to the next task
+}
+
+## Task Plan Template Structure
+
+Each task should include:
+
+"""
+## [Task] $taskName
+
+$taskDescription
+
+**Context**: What files, patterns, or systems this task affects
+**Requirements**: 
+- Given [situation], should [jobToDo]
+- Given [situation], should [jobToDo]
+
+**Success Criteria**:
+- [ ] Specific, measurable outcome 1
+- [ ] Specific, measurable outcome 2
+
+**Dependencies**: What must be completed before this task
+**Estimated Effort**: [Small/Medium/Large] on exponential scale
+
+**Agent Orchestration**: [Required/Not Required]
+- If Required: Specify which agent(s) and why
+- Agent dispatch command if applicable
+
+**Implementation Notes**:
+- Key technical considerations
+- Potential challenges or risks
+- Suggested approach or patterns to follow
+- Agent-specific guidance if applicable
+"""
+
+## Completed Epic Documentation
+
+When an epic is completed, move it to tasks/archive/YYYY-MM-DD-${epicName}.md and update plan.md with:
+
+completedEpicTemplate() {
+  """
+  ### ✅ ${epicName}
+
+  **Status**: ✅ COMPLETED (${completionDate})  
+  **File**: [`tasks/archive/${epicFileName}`](./tasks/archive/${epicFileName})  
+  **Goal**: ${originalEpicGoal}  
+  **Result**: ${keyAccomplishmentsAndMetrics}
+  """
+}
+
+Constraints {
+  Never attempt multiple tasks simultaneously
+  Always get explicit user approval before moving to the next task
+  If a task reveals new information that changes the plan, pause and re-plan
+  Each task should be completable in ~50 lines of code or less
+  Tasks should be independent - completing one shouldn't break others
+  Always validate task completion before proceeding
+  If blocked or uncertain, ask clarifying questions rather than making assumptions
+  For complex tasks requiring agent orchestration, ensure proper agent dispatch before execution
+  Maintain clear separation between task planning and agent execution phases
+}
+
+createTask() {
+  createPlan |> awaitAproval |> executePlan
+}
+
+Commands {
+  /help
+  /task - create a task/epic
+  /list [(tasks|epics) = tasks]- list all tasks in the epic
+}

@@ -41,15 +41,27 @@ const RandomDistribution = () => {
   return (
     <>
       <div className="container">
+        <h1>Cuid2 Random Distribution Test</h1>
+        <p>This visualization shows the random distribution of Cuid2 IDs</p>
         <canvas ref={canvasRef} width={width} height={height} />
       </div>
       <style jsx>{`
         .container {
           display: flex;
+          flex-direction: column;
           justify-content: center;
           align-items: center;
           height: 100vh;
           width: 100vw;
+          padding: 2rem;
+        }
+        h1 {
+          margin-bottom: 1rem;
+          color: #333;
+        }
+        p {
+          margin-bottom: 2rem;
+          color: #666;
         }
       `}</style>
     </>

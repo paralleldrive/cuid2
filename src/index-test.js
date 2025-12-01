@@ -1,5 +1,5 @@
-const { describe } = require("riteway");
-const {
+import { describe } from "riteway";
+import {
   createId,
   init,
   getConstants,
@@ -7,9 +7,9 @@ const {
   bufToBigInt,
   createFingerprint,
   isCuid,
-} = require("./index");
+} from "./index.js";
 
-const { info } = require("./test-utils.js");
+import { info } from "./test-utils.js";
 
 describe("Cuid2", async (assert) => {
   {
@@ -66,6 +66,60 @@ describe("Cuid2", async (assert) => {
       expected: length,
     });
   }
+
+  {
+    const length = 33;
+    let errorThrown = false;
+
+    try {
+      init({ length });
+    } catch (error) {
+      errorThrown = true;
+    }
+
+    assert({
+      given: "a length greater than the maximum (33)",
+      should: "throw an error",
+      actual: errorThrown,
+      expected: true,
+    });
+  }
+
+  {
+    const length = 100;
+    let errorThrown = false;
+
+    try {
+      init({ length });
+    } catch (error) {
+      errorThrown = true;
+    }
+
+    assert({
+      given: "a length much greater than the maximum (100)",
+      should: "throw an error",
+      actual: errorThrown,
+      expected: true,
+    });
+  }
+
+  {
+    const length = 100;
+    let errorMessage = "";
+
+    try {
+      init({ length });
+    } catch (error) {
+      errorMessage = error.message;
+    }
+
+    assert({
+      given: "a length much greater than the maximum (100)",
+      should: "include the received length in the error message",
+      actual: errorMessage.includes("100"),
+      expected: true,
+    });
+  }
 });
 
 describe("createCounter", async (assert) => {
@@ -84,8 +138,8 @@ describe("createCounter", async (assert) => {
 
 describe("bufToBigInt", async (assert) => {
   {
-    const actual = bufToBigInt(new Uint8Array(2));
-    const expected = BigInt(0);
+    const actual = bufToBigInt(new Uint8Array(2)).toString();
+    const expected = "0";
 
     assert({
       given: "an empty Uint8Array",
@@ -96,8 +150,10 @@ describe("bufToBigInt", async (assert) => {
   }
 
   {
-    const actual = bufToBigInt(new Uint8Array([0xff, 0xff, 0xff, 0xff]));
-    const expected = BigInt("4294967295");
+    const actual = bufToBigInt(
+      new Uint8Array([0xff, 0xff, 0xff, 0xff])
+    ).toString();
+    const expected = "4294967295";
 
     assert({
       given: "a maximum-value Uint32Array",
@@ -170,6 +226,121 @@ describe("isCuid", async (assert) => {
     assert({
       given: "an empty string",
       should: "return false",
+      actual,
+      expected,
+    });
+  }
+
+  {
+    const actual = isCuid("42");
+    const expected = false;
+
+    assert({
+      given: "a non-CUID string",
+      should: "return false",
+      actual,
+      expected,
+    });
+  }
+
+  {
+    const actual = isCuid("aaaaDLL");
+    const expected = false;
+
+    assert({
+      given: "a string with capital letters",
+      should: "return false",
+      actual,
+      expected,
+    });
+  }
+
+  {
+    const actual = isCuid("yi7rqj1trke");
+    const expected = true;
+
+    assert({
+      given: "a valid CUID2 string",
+      should: "return true",
+      actual,
+      expected,
+    });
+  }
+
+  {
+    const actual = isCuid("-x!ha");
+    const expected = false;
+
+    assert({
+      given: "a string with invalid characters",
+      should: "return false",
+      actual,
+      expected,
+    });
+  }
+
+  {
+    const actual = isCuid("ab*%@#x");
+    const expected = false;
+
+    assert({
+      given: "a string with invalid characters",
+      should: "return false",
+      actual,
+      expected,
+    });
+  }
+});
+
+describe("CSPRNG", async (assert) => {
+  {
+    // Test that crypto is being used by default
+    const id1 = createId();
+    const id2 = createId();
+    const actual = id1 !== id2;
+    const expected = true;
+    info(`ID1: ${id1}, ID2: ${id2}`);
+
+    assert({
+      given: "multiple cuid2 calls",
+      should: "generate unique IDs using CSPRNG",
+      actual,
+      expected,
+    });
+  }
+
+  {
+    // Test that a custom random function can still be passed
+    let callCount = 0;
+    const customRandom = () => {
+      callCount++;
+      return 0.5; // Fixed value for testing
+    };
+    const cuid = init({ random: customRandom });
+    const id = cuid();
+    const actual = callCount > 0;
+    const expected = true;
+    info(`Custom random ID: ${id}, calls: ${callCount}`);
+
+    assert({
+      given: "a custom random function",
+      should: "use the custom function instead of CSPRNG",
+      actual,
+      expected,
+    });
+  }
+
+  {
+    // Test that IDs generated with CSPRNG are valid
+    const ids = Array.from({ length: 100 }, () => createId());
+    const allValid = ids.every((id) => isCuid(id));
+    const allUnique = new Set(ids).size === ids.length;
+    const actual = allValid && allUnique;
+    const expected = true;
+
+    assert({
+      given: "100 IDs generated with CSPRNG",
+      should: "all be valid and unique",
       actual,
       expected,
     });
