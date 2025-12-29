@@ -131,7 +131,16 @@ const init = ({
   };
 };
 
-const createId = init();
+const createId = lazy(init);
+function lazy(fn) {
+  let initialized;
+  return () => {
+    if (!initialized) {
+      initialized = fn();
+    }
+    return initialized();
+  };
+}
 
 const isCuid = (id, { minLength = 2, maxLength = bigLength } = {}) => {
   const length = id.length;
