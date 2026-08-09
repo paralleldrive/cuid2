@@ -244,7 +244,7 @@ The hashing function mixes all the sources of entropy together into a single val
 
 ### More Portable
 
-The original Cuid used different methods to generate fingerprints across different kinds of hosts, including browsers, Node, and React Native. Unfortunately, this caused several compatability problems across the cuid user ecosystem.
+The original Cuid used different methods to generate fingerprints across different kinds of hosts, including browsers, Node, and React Native. Unfortunately, this caused several compatibility problems across the cuid user ecosystem.
 
 In Node, each production host was slightly different, and we could reliable grab process ids and such to differentiate between hosts. Our early assumptions about different hosts generating different PIDs in Node proved to be false when we started deploying on cloud virtual hosts using identical containers and micro-container architectures. The result was that host fingerprint entropy was low in Node, limiting their ability to provide good collision resistance for horizontal server scaling in environments like cloud workers and micro-containers.
 
