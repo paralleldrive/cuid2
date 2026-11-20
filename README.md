@@ -5,7 +5,7 @@
 
 Secure, collision-resistant ids optimized for horizontal scaling and performance. Next generation UUIDs.
 
-Need unique ids in your app? Cuid2 was built to keep IDs distinct even when an RNG repeats values.
+Need unique ids in your app? Forget UUIDs and GUIDs which often collide in large apps. Use Cuid2, instead.
 
 **Cuid2 is:**
 
