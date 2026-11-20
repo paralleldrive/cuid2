@@ -10,7 +10,7 @@ Need unique ids in your app? Forget UUIDs and GUIDs which often collide in large
 **Cuid2 is:**
 
 - **Secure:** It's not feasible to guess the next id, existing valid ids, or learn anything about the referenced data from the id. Cuid2 uses multiple, independent entropy sources and hashes them with a security-audited, NIST-standard cryptographically secure hashing algorithm (Sha3).
-- **Collision resistant:** With independent, uniformly distributed IDs, you'd need to generate roughly 4.74 quintillion default-length IDs to reach a 50% chance of a collision.
+- **Collision resistant:** It's extremely unlikely to generate the same id twice (by default, you'd need to generate roughly 4,740,000,000,000,000,000 ids ([`sqrt(2 * ln(2) * 36^(24-1) * 26) ≈ 4.74e+18`](https://en.wikipedia.org/wiki/Birthday_problem#Square_approximation)) to reach 50% chance of collision.)
 - **Horizontally scalable:** Generate ids on multiple machines without coordination.
 - **Offline-compatible:** Generate ids without a network connection.
 - **URL and name-friendly:** No special characters.
