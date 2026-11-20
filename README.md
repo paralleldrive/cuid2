@@ -15,7 +15,7 @@ Need unique ids in your app? Forget UUIDs and GUIDs which often collide in large
 - **Offline-compatible:** Generate ids without a network connection.
 - **URL and name-friendly:** No special characters.
 - **Fast and convenient:** No async operations. Won't introduce user-noticeable delays. Less than 5k, gzipped.
-- **But not _too fast_:** When an RNG has an exploitable statistical flaw, faster ID generation makes it cheaper to collect the samples needed to exploit it.
+- **But not _too fast_:** If you can hash too quickly and there is an exploitable statistical flaw in the RNG, you can launch parallel attacks to find duplicates or break entropy-hiding. For unique ids, the fastest runner loses the security race.
 
 **Cuid2 is not good for:**
 
