@@ -168,11 +168,13 @@ In the [GitLab project import vulnerability](https://hackerone.com/reports/74395
 
 Strava's [2018 heatmap exposed sensitive locations](https://www.engadget.com/2018-02-02-strava-s-fitness-heatmaps-are-a-potential-catastrophe.html). [Separate research on Strava](https://adambates.org/documents/Hassan_Security18.pdf) showed that sequential activity IDs made it easier to collect timestamped GPS records at scale and build a more detailed picture of people's movements. Public activity data can expose sensitive information in other unexpected ways, as [PleaseRobMe](https://web.archive.org/web/20120615011625/http://pleaserobme.com/why) illustrated.
 
+**Is Cuid2 better than a bug-free CSPRNG?** Only for convenience. A bug-free CSPRNG already gives you strong randomness, and Cuid2 gives you a URL-friendly ID format.
+
+We built Cuid and Cuid2 for the real world, where RNGs, including CSPRNGs, have a decades-long history of bugs. When an RNG repeats values, Cuid2 can still keep IDs distinct by hashing the random values together with a timestamp, counter, and host fingerprint.
+
 Cuid and Cuid2 grew out of real ID generation failures that affected our customers in production. The UUID spec couldn't protect us from bugs in the implementations we had. PHP had a [weak entropy bug affecting `uniqid()`](https://nvd.nist.gov/vuln/detail/CVE-2010-1128), MySQL verified [duplicate results from `UUID()`](https://bugs.mysql.com/bug.php?id=55209), and `node-uuid` shipped a [bug that caused it to fall back to `Math.random()`](https://github.com/advisories/GHSA-265q-28rp-chq5). Chrome's `crypto.getRandomValues()` [used a weak RC4-based generator](https://codereview.chromium.org/1431233002) for nearly five years before the fix shipped in [Chrome 48](https://chromereleases.googleblog.com/2016/01/stable-channel-update_20.html). We also ran into [Web Worker compatibility problems](https://github.com/paralleldrive/cuid/pull/133) when we added automatic crypto selection to Cuid.
 
 At Tout, I [tracked collisions across roughly 50 million Cuid IDs per month](https://github.com/paralleldrive/cuid/issues/22#issuecomment-105339060) in production browser sessions. Once the original format stabilized, we logged zero collisions.
-
-Cuid and Cuid2 were made for the real world, where RNG bugs are a fact of life. Given an error-free CSPRNG, Cuid2 gives you a convenient, URL-friendly ID. When an RNG repeats values, Cuid2 can still keep IDs distinct by hashing the random values together with a timestamp, counter, and host fingerprint.
 
 Cuid2 has accepted a [caller-supplied random function](https://github.com/paralleldrive/cuid2/blob/v2.0.0/src/index.js) since January 2023. In October 2025, it [began using Web Crypto by default](https://github.com/paralleldrive/cuid2/pull/101) where available, with a `Math.random()` fallback.
 
