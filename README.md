@@ -160,7 +160,9 @@ Cuid2 is trusted by millions of apps and reached [about 30 million weekly npm do
 
 ## Why Cuid2?
 
-IDs should be secure by default for the same reason browser sessions should be secure by default. Predictable identifiers can make it easier to [take over an account](https://www.intruder.io/research/in-guid-we-trust) when the ID is used as a [password reset token](https://infosecwriteups.com/bugbounty-how-i-was-able-to-compromise-any-user-account-via-reset-password-functionality-a11bb5f863b3).
+IDs should be secure by default for the same reason that browser sessions should be secure by default. There are too many things that can go wrong when they're not. Insecure IDs can contribute to unauthorized account access, unauthorized access to user data, and accidental leaks of personal information. Even an innocent-sounding application like a fitness tracker can expose sensitive information with serious consequences.
+
+Predictable identifiers can make it easier to [take over an account](https://www.intruder.io/research/in-guid-we-trust) when the ID is used as a [password reset token](https://infosecwriteups.com/bugbounty-how-i-was-able-to-compromise-any-user-account-via-reset-password-functionality-a11bb5f863b3).
 
 In the [GitLab project import vulnerability](https://hackerone.com/reports/743953), missing authorization was the root bug. Enumerable IDs made it easy to find targets at scale. Every lookup still needs an authorization check.
 
