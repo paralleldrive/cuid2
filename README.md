@@ -159,9 +159,7 @@ Cuid2 is trusted by millions of apps and reached [about 30 million weekly npm do
 
 ## Why Cuid2?
 
-**Is Cuid2 better than a bug-free CSPRNG?** Only for convenience. A bug-free CSPRNG already gives you strong randomness, and Cuid2 gives you a URL-friendly ID format.
-
-We built Cuid and Cuid2 for the real world, where RNGs, including CSPRNGs, have a decades-long history of bugs. When an RNG repeats values, Cuid2 can still keep IDs distinct by hashing the random values together with a timestamp, counter, and host fingerprint.
+**Use security in layers.** Don't put all your trust in the platform RNG. RNGs, including platform CSPRNGs, have a decades-long history of bugs. Cuid2 hashes random values together with a timestamp, counter, and host fingerprint. Differences in those inputs give SHA3 distinct inputs even when the RNG repeats values.
 
 Cuid and Cuid2 grew out of real ID generation failures that affected our customers in production. The UUID spec couldn't protect us from bugs in the implementations we had. PHP had a [weak entropy bug affecting `uniqid()`](https://nvd.nist.gov/vuln/detail/CVE-2010-1128), MySQL verified [duplicate results from `UUID()`](https://bugs.mysql.com/bug.php?id=55209), and `node-uuid` shipped a [bug that caused it to fall back to `Math.random()`](https://github.com/advisories/GHSA-265q-28rp-chq5). Chrome's `crypto.getRandomValues()` [used a weak RC4-based generator](https://codereview.chromium.org/1431233002) for nearly five years before the fix shipped in [Chrome 48](https://chromereleases.googleblog.com/2016/01/stable-channel-update_20.html). We also ran into [Web Worker compatibility problems](https://github.com/paralleldrive/cuid/pull/133) when we added automatic crypto selection to Cuid.
 
@@ -333,8 +331,9 @@ Database increment (Int, BigInt, AutoIncrement), [UUID v1 - v8](https://www.ietf
 Here are the disqualifiers we care about:
 
 - **Leaks information:** Database auto-increment, all UUIDs (except V4 and including V6 - V8), Ulid, Snowflake, ShardingId, pushId, ObjectId, KSUID
-- **Collision prone:** Database auto-increment and UUID implementations with faulty randomness. UUIDv4 relies on its RNG for collision resistance, and an RNG flaw can remain undiscovered or undisclosed.
-- **Not cryptographically secure random output:** Database auto-increment, UUID v1, and UUIDv4 implementations backed by a weak RNG.
+- **Collision prone:** Database auto-increment.
+- **Collision resistance depends entirely on the RNG:** UUIDv4. RNG flaws can go undiscovered or undisclosed for years.
+- **Not cryptographically secure random output:** Database auto-increment, UUID v1.
 - **Requires distributed coordination:** Snowflake, ShardingID, database increment
 - **Not URL or name friendly:** UUID (too long, dashes), Ulid (too long), UUID v7 (too long) - anything else that supports special characters like dashes, spaces, underscores, #$%^&, etc.
 - **Too fast:** UUID v1, UUID v4, NanoId, Ulid, Xid
