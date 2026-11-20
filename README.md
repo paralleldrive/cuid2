@@ -333,7 +333,7 @@ Database increment (Int, BigInt, AutoIncrement), [UUID v1 - v8](https://www.ietf
 Here are the disqualifiers we care about:
 
 - **Leaks information:** Database auto-increment, all UUIDs (except V4 and including V6 - V8), Ulid, Snowflake, ShardingId, pushId, ObjectId, KSUID
-- **Collision prone:** Database auto-increment and UUID implementations with faulty randomness.
+- **Collision prone:** Database auto-increment and UUID implementations with faulty randomness. UUIDv4 relies on its RNG for collision resistance, and an RNG flaw can remain undiscovered or undisclosed.
 - **Not cryptographically secure random output:** Database auto-increment, UUID v1, and UUIDv4 implementations backed by a weak RNG.
 - **Requires distributed coordination:** Snowflake, ShardingID, database increment
 - **Not URL or name friendly:** UUID (too long, dashes), Ulid (too long), UUID v7 (too long) - anything else that supports special characters like dashes, spaces, underscores, #$%^&, etc.
@@ -342,7 +342,7 @@ Here are the disqualifiers we care about:
 Here are the qualifiers we care about:
 
 - **Secure - No leaked info, attack-resistant:** Cuid2, NanoId (Medium - trusts web crypto API entropy).
-- **Collision resistant:** Cuid2, Cuid v1, NanoId, Snowflake, KSUID, XID, Ulid, ShardingId, ObjectId, UUIDv4 with a sound RNG, UUID v6 - v8.
+- **Collision resistant:** Cuid2, Cuid v1, NanoId, Snowflake, KSUID, XID, Ulid, ShardingId, ObjectId, UUID v6 - v8.
 - **Horizontally scalable:** Cuid2, Cuid v1, NanoId, ObjectId, Ulid, KSUID, Xid, ShardingId, ObjectId, UUID v6 - v8.
 - **Offline-compatible:** Cuid2, Cuid v1, NanoId, Ulid, UUID v6 - v8.
 - **URL and name-friendly:** Cuid2, Cuid v1, NanoId (with custom alphabet).
