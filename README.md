@@ -333,11 +333,11 @@ Database increment (Int, BigInt, AutoIncrement), [UUID v1 - v8](https://www.ietf
 Here are the disqualifiers we care about:
 
 - **Leaks information:** Database auto-increment, all UUIDs (except V4 and including V6 - V8), Ulid, Snowflake, ShardingId, pushId, ObjectId, KSUID
-- **Collision prone across uncoordinated generators:** Database auto-increment and UUID implementations with faulty randomness.
+- **Collision prone:** Database auto-increment and UUID implementations with faulty randomness.
 - **Not cryptographically secure random output:** Database auto-increment, UUID v1, and UUIDv4 implementations backed by a weak RNG.
 - **Requires distributed coordination:** Snowflake, ShardingID, database increment
 - **Not URL or name friendly:** UUID (too long, dashes), Ulid (too long), UUID v7 (too long) - anything else that supports special characters like dashes, spaces, underscores, #$%^&, etc.
-- **Too fast when an RNG flaw makes samples useful:** Faster generation can make statistical attacks cheaper.
+- **Too fast:** UUID v1, UUID v4, NanoId, Ulid, Xid
 
 Here are the qualifiers we care about:
 
