@@ -199,7 +199,9 @@ Applications might need to support online / offline capability, which means we n
 
 Distributed generators can produce correlated output if a runtime seeds them poorly or if processes start from cloned RNG state. Random IDs often lack sufficient entropy when running in separate processes (such as cloned virtual machines or client browsers) to guarantee against collisions. Application developers report v4 UUID collisions causing problems in their applications when the ID generation is distributed between lots of machines such that lots of IDs are generated in the same millisecond. A timestamp, counter, and host fingerprint can help distinguish calls whose random values repeat.
 
-When collisions are rare, the risk grows roughly quadratically. Double the number of random IDs and you roughly quadruple the risk. Each extra base-36 character gives you 36 times as many possible IDs.
+Successful apps can grow exponentially, adding hundreds or thousands of new clients per day. If each client generates about the same number of random IDs, collision risk grows exponentially over time, too. Each extra random base-36 character cuts that risk by a factor of 36. At 20% monthly client growth, one extra character buys you about 10 months.
+
+That extra character only buys you time if it adds entropy. If two clients repeat the same random sequence, longer IDs can still collide. Cuid2 mixes in a timestamp, counter, and host fingerprint to give those clients other ways to generate distinct IDs.
 
 Because of the nature of this problem, it's possible to build an app from the ground up and scale it to a million users before this problem is detected. By the time you notice the problem (when your peak hour use requires dozens of ids to be created per ms), if your db doesn't have unique constraints on the id because you thought your guids were safe, you're in a world of hurt. Your users start to see data that doesn't belong to them because the db just returns the first ID match it finds.
 
