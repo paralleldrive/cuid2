@@ -5,7 +5,7 @@
 
 Secure, collision-resistant ids optimized for horizontal scaling and performance. Next generation UUIDs.
 
-Need unique ids in your app? Forget UUIDs and GUIDs which often collide in large apps. Use Cuid2, instead.
+Need unique ids in your app? Cuid2 was built to keep IDs distinct even when an RNG repeats values.
 
 **Cuid2 is:**
 
@@ -15,7 +15,7 @@ Need unique ids in your app? Forget UUIDs and GUIDs which often collide in large
 - **Offline-compatible:** Generate ids without a network connection.
 - **URL and name-friendly:** No special characters.
 - **Fast and convenient:** No async operations. Won't introduce user-noticeable delays. Less than 5k, gzipped.
-- **But not _too fast_:** If you can hash too quickly you can launch parallel attacks to find duplicates or break entropy-hiding. For unique ids, the fastest runner loses the security race.
+- **But not _too fast_:** When an RNG has an exploitable statistical flaw, faster ID generation makes it cheaper to collect the samples needed to exploit it.
 
 **Cuid2 is not good for:**
 
@@ -126,9 +126,6 @@ import { init } from "@paralleldrive/cuid2";
 // The init function returns a custom createId function with the specified
 // configuration. All configuration properties are optional.
 const createId = init({
-  // A custom random function with the same API as Math.random.
-  // You can use this to pass a cryptographically secure random function.
-  random: Math.random,
   // the length of the id
   length: 10,
   // A custom fingerprint for the host environment. This is used to help
@@ -142,6 +139,8 @@ console.log(
   createId() // itp2u4ozr4
 );
 ```
+
+To supply your own RNG, pass a `random` function with the same API as `Math.random()`.
 
 ### Validation
 
@@ -160,14 +159,6 @@ Cuid2 is trusted by millions of apps and reached [about 30 million weekly npm do
 
 ## Why Cuid2?
 
-IDs should be secure by default for the same reason that browser sessions should be secure by default. There are too many things that can go wrong when they're not. Insecure IDs can contribute to unauthorized account access, unauthorized access to user data, and accidental leaks of personal information. Even an innocent-sounding application like a fitness tracker can expose sensitive information with serious consequences.
-
-Predictable identifiers can make it easier to [take over an account](https://www.intruder.io/research/in-guid-we-trust) when the ID is used as a [password reset token](https://infosecwriteups.com/bugbounty-how-i-was-able-to-compromise-any-user-account-via-reset-password-functionality-a11bb5f863b3).
-
-In the [GitLab project import vulnerability](https://hackerone.com/reports/743953), missing authorization was the root bug. Enumerable IDs made it easy to find targets at scale. Every lookup still needs an authorization check.
-
-Strava's [2018 heatmap exposed sensitive locations](https://www.engadget.com/2018-02-02-strava-s-fitness-heatmaps-are-a-potential-catastrophe.html). [Separate research on Strava](https://adambates.org/documents/Hassan_Security18.pdf) showed that sequential activity IDs made it easier to collect timestamped GPS records at scale and build a more detailed picture of people's movements. Public activity data can expose sensitive information in other unexpected ways, as [PleaseRobMe](https://web.archive.org/web/20120615011625/http://pleaserobme.com/why) illustrated.
-
 **Is Cuid2 better than a bug-free CSPRNG?** Only for convenience. A bug-free CSPRNG already gives you strong randomness, and Cuid2 gives you a URL-friendly ID format.
 
 We built Cuid and Cuid2 for the real world, where RNGs, including CSPRNGs, have a decades-long history of bugs. When an RNG repeats values, Cuid2 can still keep IDs distinct by hashing the random values together with a timestamp, counter, and host fingerprint.
@@ -178,7 +169,15 @@ At Tout, I [tracked collisions across roughly 50 million Cuid IDs per month](htt
 
 Cuid2 has accepted a [caller-supplied random function](https://github.com/paralleldrive/cuid2/blob/v2.0.0/src/index.js) since January 2023. In October 2025, it [began using Web Crypto by default](https://github.com/paralleldrive/cuid2/pull/101) where available, with a `Math.random()` fallback.
 
-Modern web applications have different requirements than applications written in the early days of GUID (globally unique identifiers) and UUIDs (universally unique identifiers). In particular, Cuid2 aims to provide stronger uniqueness guarantees than any existing GUID or UUID implementation and protect against leaking any information about the data being referenced, or the system that generated the id.
+IDs should be secure by default for the same reason that browser sessions should be secure by default. There are too many things that can go wrong when they're not. Insecure IDs can contribute to unauthorized account access, unauthorized access to user data, and accidental leaks of personal information. Even an innocent-sounding application like a fitness tracker can expose sensitive information with serious consequences.
+
+Predictable identifiers can make it easier to [take over an account](https://www.intruder.io/research/in-guid-we-trust) when the ID is used as a [password reset token](https://infosecwriteups.com/bugbounty-how-i-was-able-to-compromise-any-user-account-via-reset-password-functionality-a11bb5f863b3).
+
+In the [GitLab project import vulnerability](https://hackerone.com/reports/743953), missing authorization was the root bug. Enumerable IDs made it easy to find targets at scale. Every lookup still needs an authorization check.
+
+Strava's [2018 heatmap exposed sensitive locations](https://www.engadget.com/2018-02-02-strava-s-fitness-heatmaps-are-a-potential-catastrophe.html). [Separate research on Strava](https://adambates.org/documents/Hassan_Security18.pdf) showed that sequential activity IDs made it easier to collect timestamped GPS records at scale and build a more detailed picture of people's movements. Public activity data can expose sensitive information in other unexpected ways, as [PleaseRobMe](https://web.archive.org/web/20120615011625/http://pleaserobme.com/why) illustrated.
+
+Modern web applications have different requirements than applications written in the early days of GUID (globally unique identifiers) and UUIDs (universally unique identifiers). In particular, Cuid2 is designed to resist collisions when random values repeat and to keep timestamps and host details out of the visible ID.
 
 Cuid2 is the next generation of Cuid, which has been used in thousands of applications for over a decade with no confirmed collision reports. The changes in Cuid2 are significant and could potentially disrupt the many projects that rely on Cuid, so we decided to create a replacement library and id standard, instead. Cuid is now deprecated in favor of Cuid2.
 
@@ -334,16 +333,16 @@ Database increment (Int, BigInt, AutoIncrement), [UUID v1 - v8](https://www.ietf
 Here are the disqualifiers we care about:
 
 - **Leaks information:** Database auto-increment, all UUIDs (except V4 and including V6 - V8), Ulid, Snowflake, ShardingId, pushId, ObjectId, KSUID
-- **Collision Prone:** Database auto-increment, v4 UUID
-- **Not cryptographically secure random output:** Database auto-increment, UUID v1, UUID v4
+- **Collision prone across uncoordinated generators:** Database auto-increment and UUID implementations with faulty randomness.
+- **Not cryptographically secure random output:** Database auto-increment, UUID v1, and UUIDv4 implementations backed by a weak RNG.
 - **Requires distributed coordination:** Snowflake, ShardingID, database increment
 - **Not URL or name friendly:** UUID (too long, dashes), Ulid (too long), UUID v7 (too long) - anything else that supports special characters like dashes, spaces, underscores, #$%^&, etc.
-- **Too fast:** UUID v1, UUID v4, NanoId, Ulid, Xid
+- **Too fast when an RNG flaw makes samples useful:** Faster generation can make statistical attacks cheaper.
 
 Here are the qualifiers we care about:
 
 - **Secure - No leaked info, attack-resistant:** Cuid2, NanoId (Medium - trusts web crypto API entropy).
-- **Collision resistant:** Cuid2, Cuid v1, NanoId, Snowflake, KSUID, XID, Ulid, ShardingId, ObjectId, UUID v6 - v8.
+- **Collision resistant:** Cuid2, Cuid v1, NanoId, Snowflake, KSUID, XID, Ulid, ShardingId, ObjectId, UUIDv4 with a sound RNG, UUID v6 - v8.
 - **Horizontally scalable:** Cuid2, Cuid v1, NanoId, ObjectId, Ulid, KSUID, Xid, ShardingId, ObjectId, UUID v6 - v8.
 - **Offline-compatible:** Cuid2, Cuid v1, NanoId, Ulid, UUID v6 - v8.
 - **URL and name-friendly:** Cuid2, Cuid v1, NanoId (with custom alphabet).
@@ -358,13 +357,13 @@ Overall, NanoId and Ulid seem to hit most of our requirements, Ulid leaks timest
 
 Along with using cryptographically secure methods, Cuid2 supplies its own known entropy from a diverse pool and uses a security audited, NIST-standard cryptographically secure hashing algorithm.
 
-**Too fast:** NanoId and Ulid are also very fast. But that's not a good thing. The faster you can generate ids, the faster you can run collision attacks. Bad guys looking for statistical anomalies in the distribution of ids can use the speed of NanoId to their advantage. Cuid2 is fast enough to be convenient, but not so fast that it's a security risk.
+**Too fast:** If an RNG has an exploitable statistical flaw and collecting samples is the bottleneck, faster ID generation makes the attack cheaper. Cuid2 deliberately trades some generation speed for that reason.
 
 #### Entropy Security Comparison
 
 - NanoId Entropy: Web Crypto.
 - Ulid Entropy: Web Crypto + time stamp (leaked).
-- Cuid2 entropy inputs: Random values from Web Crypto where available (or from a caller-supplied RNG or the `Math.random()` fallback), timestamp, counter, and host fingerprint. Cuid2 mixes these inputs with SHA3. Each input that varies independently multiplies the number of possible input combinations. That larger input space helps Cuid2 make better use of the output space, whose size is fixed by the ID length.
+- Cuid2 entropy inputs: Random values from Web Crypto where available (or from a caller-supplied RNG or the `Math.random()` fallback), timestamp, counter, and host fingerprint. Cuid2 mixes these inputs with SHA3. Each input that varies independently multiplies the number of possible input combinations. When random values repeat, changes in the timestamp, counter, or host fingerprint still give SHA3 distinct inputs to spread across the output space, whose size is fixed by the ID length.
 
 ## Testing
 
