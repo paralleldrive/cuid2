@@ -364,7 +364,7 @@ Along with using cryptographically secure methods, Cuid2 supplies its own known 
 
 - NanoId Entropy: Web Crypto.
 - Ulid Entropy: Web Crypto + time stamp (leaked).
-- Cuid2 inputs: Random values from Web Crypto where available (or from a caller-supplied RNG or the `Math.random()` fallback), timestamp, counter, and host fingerprint. Cuid2 mixes these inputs with SHA3.
+- Cuid2 entropy inputs: Random values from Web Crypto where available (or from a caller-supplied RNG or the `Math.random()` fallback), timestamp, counter, and host fingerprint. Cuid2 mixes these inputs with SHA3. Each input that varies independently multiplies the number of possible input combinations. That input space can be much larger than the output space, which is fixed by the ID length.
 
 ## Testing
 
