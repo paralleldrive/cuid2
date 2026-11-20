@@ -202,7 +202,7 @@ Applications might need to support online / offline capability, which means we n
 
 Distributed generators can produce correlated output if a runtime seeds them poorly or if processes start from cloned RNG state. A timestamp, counter, and host fingerprint can help distinguish calls whose random values repeat.
 
-For independent, uniformly distributed IDs, the expected number of colliding pairs grows quadratically with the total number of IDs. When collisions are rare, the probability of at least one collision follows the same approximation. If each client generates the same fixed number of IDs, this also applies to the client count. Each extra uniformly random base-36 character multiplies the ID space by 36.
+When collisions are rare, the risk grows roughly quadratically. Double the number of random IDs and you roughly quadruple the risk. Each extra base-36 character gives you 36 times as many possible IDs.
 
 Because of the nature of this problem, it's possible to build an app from the ground up and scale it to a million users before this problem is detected. By the time you notice the problem (when your peak hour use requires dozens of ids to be created per ms), if your db doesn't have unique constraints on the id because you thought your guids were safe, you're in a world of hurt. Your users start to see data that doesn't belong to them because the db just returns the first ID match it finds.
 
